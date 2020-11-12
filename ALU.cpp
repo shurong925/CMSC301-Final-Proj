@@ -51,17 +51,17 @@ string ALU::getResult()
   switch(op)
   {
   case "0010" :
-     result = getValue(readDataOne) + getValue(readDataTwo);
+     result = bitset<32> b (stoi(readDataOne,2) + stoi(readDataTwo,2));
      return result;
   case "0110" :
-     result = getValue(readDataOne) - getValue(readDataTwo);
+     result = bitset<32> b (stoi(readDataOne,2) - stoi(readDataTwo,2));
      return result;
   break;
   case "0111" :
-     if(getValue(readDataOne) > getValue(readDataTwo))
-          result = getValue(readDataTwo);
+     if(stoi(readDataOne,2) > rstoi(readDataTwo,2))
+          result = readDataTwo;
      else
-          result = getValue(readDataOne);
+          result = readDataOne;
      return result;
   }
 
