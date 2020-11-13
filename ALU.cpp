@@ -70,14 +70,11 @@ string ALU::getResult()
 //Find out the output of whether it's 0 or 1
 boolean ALU::getOutput()
 {
-
-
-
+  return if(result == 0);
 }
 
 //Return the value to be written to the write register
 string getWriteValue()
 {
-
-
+  return result;
 }

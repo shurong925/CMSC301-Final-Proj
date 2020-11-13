@@ -20,8 +20,8 @@ class ALU
    boolean zero; //If the result is zero or not
    string op; //The operation indicated by ALU Control
    string result; //The result after performing functions
-   string readDataOne; //The number of first register to read
-   string readDataTwo; //The number of second register to read
+   string readDataOne; //The value of first register to read
+   string readDataTwo; //The value of second register to read
    string writeRegister; //The number of the register to be written to
    string writeValue; //The value to write to the write register
 
