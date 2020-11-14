@@ -34,13 +34,14 @@ class Control
 
    void setValues(); //Using the opField of the instruction, sets all the boolean values
    boolean getRegWrite();
-   Boolean getmemRead();
-   Boolean getmemWrite();
-   Boolean getaluSrc();
-   Boolean getRegDst();
-   Boolean getJump();
-   Boolean getMemToReg();
-   String getALUOp();
+   boolean getmemRead();
+   boolean getmemWrite();
+   boolean getaluSrc();
+   boolean getRegDst();
+   boolean getJump();
+   boolean getMemToReg();
+   void setALUop();
+   string getALUOp();
    //All of above get methods return the boolean/string value contained in data field
 
 
