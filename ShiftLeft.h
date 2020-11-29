@@ -14,8 +14,8 @@ class ShiftLeft
  public:
    ShiftLeft(string result);
    ~ShiftLeft();
-   void shiftLeftTwo();
-   string getShifted()
+   void shiftLeftTwo(string shift);
+   string getShifted();
 };
 
 #endif
