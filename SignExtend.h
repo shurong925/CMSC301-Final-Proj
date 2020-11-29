@@ -1,9 +1,11 @@
 #ifndef __SIGNEXTEND_H__
 #define __SIGNEXTEND_H__
 
-using namespace std;
 #include <stdlib.h>
 #include <bitset>
+
+using namespace std;
+
 
 class SignExtend
 {
@@ -14,8 +16,8 @@ class SignExtend
  public:
    SignExtend(string extended);
    ~SignExtend();
-   void extend();
-   string getExtended()
+   void extend(string offset);
+   string getExtended();
 };
 
 #endif
