@@ -3,7 +3,7 @@
 constructor of RegisterFile
 @param: std::map<int, string>
 */
-RegisterFile::RegisterFile(std::map<int, string> Collection)
+RegisterFile::RegisterFile(map<int, string> Collection)
 {
   Registers = Collection;
 }
@@ -17,7 +17,7 @@ RegisterFile::~RegisterFile(){}
 Set the first register to be read
 @param: integer of the number of register
 */
-void RegisterFile::setFirstRegister(String One)
+void RegisterFile::setFirstRegister(string One)
 {
   readRegisterOne = One;
 }
@@ -26,17 +26,17 @@ void RegisterFile::setFirstRegister(String One)
 Set the second register to be read
 @param: integer of the number of register
 */
-void RegisterFile::setSecondRegister(String Two)
+void RegisterFile::setSecondRegister(string Two)
 {
   readRegisterTwo = Two;
 }
 
-void writeInstructionOrNot(boolean indicator)
+void RegisterFile::writeInstructionOrNot(bool indicator)
 {
   regWrite = indicator;
 } //return indicator of whether the instruction needs to write or not
 
-void setWriteRegister(string reg)
+void RegisterFile::setWriteRegister(string reg)
 {
   writeRegister  = reg;
 } //set the register to be written to
@@ -80,7 +80,9 @@ Get the value stored in the register
 */
 string RegisterFile::getValue(string index)
 {
-  map<string,string > ::iterator it;
-  it = maplive.find(index);
-  return it->second;
+  //map<string,string > ::iterator it;
+  //it = maplive.find(index);
+  //return it->second;
+  return "";
 }
+
