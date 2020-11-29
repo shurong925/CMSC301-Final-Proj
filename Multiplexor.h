@@ -14,5 +14,6 @@ class Multiplexor{
 		~Multiplexor();
 		int getData();
 		void setInput(bool ci);
+		void setDate(int one, int two);
 };
 #endif
