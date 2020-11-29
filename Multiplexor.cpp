@@ -23,3 +23,8 @@ int Multiplexor::getData(){
 void Multiplexor::setInput(bool ci){
 	controlInput = ci;
 }
+
+void Multiplexor::setData(int one int two){
+	dataOne = one;
+	dataTwo = two;
+}
