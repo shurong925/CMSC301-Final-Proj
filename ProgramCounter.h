@@ -8,10 +8,10 @@ using namespace std;
 class ProgramCounter
 {
  private:
-   string address; //stores the result
+   int address; //stores the result
 
  public:
-   string getAddress();
+   int getAddress();
 };
 
 #endif
