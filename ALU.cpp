@@ -1,5 +1,6 @@
-#include "ALU.h";
-#include "RegisterFile.h";
+#include "ALU.h"
+#include "RegisterFile.h"
+using namespace std;
 /*
 constructor of ALU
 */
@@ -16,7 +17,7 @@ void ALU::setWriteRegister(string write)
 }
 
 //Set the function to be performed based on ALU control
-void setOperation(string operation)
+void ALU::setOperation(string operation)
 {
   op = operation;
 }
@@ -28,7 +29,7 @@ void ALU::setReadDataOne(string One)
 }
 
 //Set the number of first register to read
-void ALU::setReadDataOne(string Two)
+void ALU::setReadDataTwo(string Two)
 {
   readDataTwo = Two;
 }
@@ -39,7 +40,7 @@ string ALU::getWriteRegister()
   return writeRegister;
 }
 
-string getOperation()
+string ALU::getOperation()
 {
   return op;
 }
@@ -48,33 +49,36 @@ string getOperation()
 string ALU::getResult()
 {
   //string op;
-  switch(op)
-  {
-  case "0010" :
-     result = bitset<32> b (stoi(readDataOne,2) + stoi(readDataTwo,2));
-     return result;
-  case "0110" :
-     result = bitset<32> b (stoi(readDataOne,2) - stoi(readDataTwo,2));
-     return result;
-  break;
-  case "0111" :
-     if(stoi(readDataOne,2) > rstoi(readDataTwo,2))
+  if(op == "0010"){
+    result = bitset<32>((stoi(readDataOne) + stoi(readDataTwo))).to_string();
+    return result;
+  }
+  else if(op == "0110"){
+    result = bitset<32>((stoi(readDataOne) - stoi(readDataTwo))).to_string();
+    return result;
+  }
+  else if(op == "0111"){
+    if(stoi(readDataOne) > stoi(readDataTwo))
           result = readDataTwo;
      else
           result = readDataOne;
      return result;
-  }
 
+  }
+  return "error"; //need to figure out exactly what will happen if the ifs arent hit
 }
 
 //Find out the output of whether it's 0 or 1
-boolean ALU::getOutput()
+bool ALU::getOutput()
 {
-  return if(result == 0);
+  if(stoi(result) == 0){
+    return true;
+  }
+  return false;
 }
 
 //Return the value to be written to the write register
-string getWriteValue()
+string ALU::getWriteValue()
 {
   return result;
 }
