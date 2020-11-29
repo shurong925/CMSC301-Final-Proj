@@ -2,7 +2,7 @@
 using namespace std;
 
 //constructor
-InstructionMemory::InstructionMemory(unordered_map<string, string> inst){
+InstructionMemory::InstructionMemory(unordered_map<int, string> inst){
 	Instructions = inst;
 
 }
@@ -36,7 +36,7 @@ string InstructionMemory::getShift(){
 	return currentInstruction.substr(6, 26);
 }
 
-void InstructionMemory::getAddress(string address){
+void InstructionMemory::getAddress(int address){
 	currentAddress = address;
-	currentInstruction = Instructions.at(currentAddress);
+	currentInstruction = Instructions[currentAddress];
 }
