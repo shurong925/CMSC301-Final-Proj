@@ -5,16 +5,17 @@
 
 using namespace std;
 
-class InstructionMemory{
+class InstructionMemory
+{
 	private:
-		unordered_map<string, string> Instructions;
+		unordered_map<int, string> Instructions;
 		string currentInstruction;
-		string currentAddress;
+		int currentAddress;
 
 	public:
-		InstructionMemory(unordered_map<string, string> inst);
+		InstructionMemory(unordered_map<int, string> inst);
 		~InstructionMemory();
-		void getAddress(string address);
+		void getAddress(int address);
 		string getOpcode();
 		string getRS();
 		string getRT();
