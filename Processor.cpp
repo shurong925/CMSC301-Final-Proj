@@ -8,6 +8,7 @@
 #include "ShiftLeft.h"
 #include "SignExtend.h"
 #include "InstructionMemory.h"
+#include "ASMParser.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -64,12 +65,40 @@ int main(int argc, char *argv[])
   else
     write_to_file = true;
 
-  process();
+  ASMParser *parser;
+
+
+  parser = new ASMParser(program_input);
+
+  if(parser->isFormatCorrect() == false){
+    cerr << "Format of input file is incorrect " << endl;
+    exit(1);
+  }
+
+  Instruction i;
+  unordered_map<int, string> instructions;      // list of Instructions
+  //Iterate through instructions, printing each encoding.
+  int myLabelAddress = 0x400000;
+  i = parser->getNextInstruction();
+  while( i.getOpcode() != UNDEFINED){
+    // cout << i.getString() << endl;
+    instructions[myLabelAddress] = i.getEncoding();
+    i = parser->getNextInstruction();
+    myLabelAddress += 4;
+  }
+  
+  InstructionMemory IM(instructions);
+
+  delete parser;
+  //process();
   return 0;
+
+
 }
 
 void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control)
 {
+  /*
   string CurrentAddress = PC.getAddress();
 
   string CurrentRS = IM.getRS();
@@ -78,53 +107,53 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   string CurrentOpCode = IM.getOpcode();
   string CurrentOffset = IM.getOffset();
 
-  boolean controlInput1;
-  if(CurrentRD = null)
-    controlInput1 = false;
-  else
-    controlInput1 = true;
+  bool controlInput1;
+  //if(CurrentRD == NULL)
+    //controlInput1 = false;
+  //else
+    //controlInput1 = true;
 
   Multiplexor Mul1 = Multiplexor(controlInput1);
-  Mul1.setInput(contropInput1);
+  Mul1.setInput(controlInput1);
   Mul1.getData(); //Not sure how you initialize Data 1 and Data 2
 
   RF.setFirstRegister(CurrentRS);
   RF.setSecondRegister(CurrentRD);
   RF.writeInstructionOrNot(controlInput1);
 
-  if(RF.writeCondition() == true)
-  {
-    RF.setWriteRegister(CurrentRD);
-  }
+  //if(RF.writeCondition() == true)
+  //{
+   // RF.setWriteRegister(CurrentRD);
+  //}
 
-  string 1stRegister = RF.getFirstRegister();
-  string 2ndRegister = RF.getSecRegister();
+  string firstRegister = RF.getFirstRegister();
+  string secondRegister = RF.getSecRegister();
   string writeRegister = RF.getWriteRegister();
 
-  string 1stValue = RF.getValue(1stRegister);
-  string 2ndValue = RF.getValue(2ndRegister);
+  string firstValue = RF.getValue(firstRegister);
+  string secondValue = RF.getValue(secondRegister);
 
   SignExtend SE = SignExtend(CurrentOffset);
-  String Extended = SE.getExtended();
+  string Extended = SE.getExtended();
 
-  boolean controlInput 2 = false;
+  bool controlInput2 = false;
   Multiplexor Mul2 = Multiplexor(controlInput1);
-  Mul1.setInput(contropInput1);
+  Mul1.setInput(controlInput1);
   Mul1.getData(); //Still not sure how to use multiplexor
 
   string Opcode = Control.getALUOp();
 
-  ALUControl ALUControl = ALUControl();
-  ALUControl.setOp(OpCode);
-  string ALUOP = ALUControl.getOp();
+  //ALUControl ALUControl();
+  //ALUControl.setOp(OpCode);
+  //string ALUOP = ALUControl.getOp();
 
-  ALU ALU1 = ALU();
-  ALU1.setReadDataOne(1stValue);
-  ALU1.setReadDataTwo(); //This should be the value passed from multiplexor
-  string Result = ALU1.getResult();
-  boolean ZERO = ALU1.getOutput();
+  //ALU ALUone();
+  //ALUone.setReadDataOne(firstValue);
+  //ALUone.setReadDataTwo(); //This should be the value passed from multiplexor
+  //string Result = ALUone.getResult();
+  //string ZERO = ALUone.getOutput();
 
 
-
+  */
 
 }
