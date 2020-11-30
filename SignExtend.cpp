@@ -1,13 +1,13 @@
 #include "SignExtend.h"
 
-SignExtend::SignExtend(string Offset)
+SignExtend::SignExtend()
 {
-  offset = Offset;
 }
 SignExtend::~SignExtend(){}
 
-void SignExtend::extend(string offset)
+void SignExtend::extend(string Offset)
 {
+	offset = Offset;
   extended = bitset<32>(stoi(offset)).to_string();
 }
 
