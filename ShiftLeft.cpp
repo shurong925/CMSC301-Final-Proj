@@ -1,14 +1,14 @@
 #include "ShiftLeft.h"
 
-ShiftLeft::ShiftLeft(string Shift)
+ShiftLeft::ShiftLeft()
 {
-  shift = Shift;
 }
 ShiftLeft::~ShiftLeft(){}
 
-void ShiftLeft::shiftLeftTwo(string shift)
+void ShiftLeft::shiftLeftTwo(string shifter)
 {
-    
+    shift = shifter;
+    result = shift.substr(2, shift.length()) + "00";
 }
 
 string ShiftLeft::getShifted()
