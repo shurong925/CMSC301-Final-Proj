@@ -1,9 +1,11 @@
 #ifndef __SHIFTLEFT_H__
 #define __SHIFTLEFT_H__
 
-using namespace std;
 #include <stdlib.h>
 #include <bitset>
+
+using namespace std;
+
 
 class ShiftLeft
 {
