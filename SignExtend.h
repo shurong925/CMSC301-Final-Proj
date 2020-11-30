@@ -14,9 +14,9 @@ class SignExtend
    string offset;
 
  public:
-   SignExtend(string extended);
+   SignExtend();
    ~SignExtend();
-   void extend(string offset);
+   void extend(string Offset);
    string getExtended();
 };
 
