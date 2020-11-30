@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
 /////////////////////////////////////////////////////////////////////
   fstream Data;
-  Data.open(argv[2], ios::in);
+  Data.open(memory_contents_input, ios::in);
   //To remind the user that the file cannot be opened
   if (!Data)
   {
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
 ///////////////////////////////////////////////////////////////////////
   fstream Register;
-  Register.open(argv[3], ios::in);
+  Register.open(register_file_input, ios::in);
   string s2;
   unordered_map<int, string> registerMemory;
   while(getline(Register,s2))
