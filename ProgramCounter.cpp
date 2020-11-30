@@ -1,11 +1,11 @@
 #include "ProgramCounter.h"
 
 
-ProgramCounter::ProgramCounter(string Address)
+ProgramCounter::ProgramCounter()
 {
-    address = Address;
+    address = 0x400000;
 }
-string ProgramCounter::getAddress()
+int ProgramCounter::getAddress()
 {
     return address;
 }
