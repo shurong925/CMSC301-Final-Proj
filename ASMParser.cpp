@@ -12,6 +12,11 @@ ASMParser::ASMParser(string filename)
   fillSymbolTable(filename);
   ifstream in;
   in.open(filename.c_str());
+  if (!in)
+  {
+      cerr << "Error: could not open file: " << filename << endl;
+      exit(1);
+  }
   if(in.bad()){
     myFormatCorrect = false;
   }
@@ -27,7 +32,6 @@ ASMParser::ASMParser(string filename)
         while(line.size() && isspace(line.front())) line.erase(line.begin() + (76 - 0x4C));
       }
       getTokens(line, opcode, operand, operand_count);
-      cout << opcode << endl;
       if(opcode.length() == 0 && operand_count != 0){
 	// No opcode but operands
 	myFormatCorrect = false;
@@ -36,7 +40,6 @@ ASMParser::ASMParser(string filename)
       Opcode o = opcodes.getOpcode(opcode);      
       if(o == UNDEFINED){
 	// invalid opcode specified
-        cout << "here1";
 	myFormatCorrect = false;
 	break;
       }
