@@ -27,6 +27,16 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   string CurrentRD = IM.getRD();
   string CurrentOpCode = IM.getOpcode();
   string CurrentOffset = IM.getOffset();
+  Control.setValues(CurrentOpCode);
+  //output all of the control lines
+  cout << Control.getRegWrite() << endl;
+  cout << Control.getmemWrite() << endl;
+  cout << Control.getaluSrc() << endl;
+  cout << Control.getRegDst() << endl;
+  cout << Control.getJump() << endl;
+  cout << Control.getMemToReg() << endl;
+  cout << Control.getALUOp() << endl;
+  cout << Control.getmemRead() << endl;
   //
   // bool controlInput1;
   // //if(CurrentRD == NULL)
