@@ -2,8 +2,7 @@
 using namespace std;
 
 //constructor
-Multiplexor::Multiplexor(bool ci){
-	controlInput = ci;
+Multiplexor::Multiplexor(){
 }
 
 //deconstructor
@@ -11,7 +10,7 @@ Multiplexor::~Multiplexor()
 {	
 }
 
-int Multiplexor::getData(){
+string Multiplexor::getData(){
 	if(controlInput){
 		return dataOne;
 	}
@@ -24,7 +23,7 @@ void Multiplexor::setInput(bool ci){
 	controlInput = ci;
 }
 
-void Multiplexor::setData(int one, int two){
+void Multiplexor::setData(string one, string two){
 	dataOne = one;
 	dataTwo = two;
 }
