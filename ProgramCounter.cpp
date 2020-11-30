@@ -1,10 +1,11 @@
 #include "ProgramCounter.h";
 
-string getAddress()
+
+ProgramCounter::ProgramCounter(string Address)
 {
-    return address; 
+    address = Address;
 }
-
-
-
-
+string ProgramCounter::getAddress()
+{
+    return address;
+}

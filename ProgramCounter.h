@@ -1,18 +1,16 @@
 #ifndef __PROGRAMCOUNTER_H__
 #define __PROGRAMCOUNTER_H__
-
+#include<iostream>
 using namespace std;
-#include <stdlib.h>
-#include <bitset>
 
 class ProgramCounter
 {
  private:
-   int address; //stores the result
+   string address; //stores the result
 
  public:
-   int getAddress();
+    ProgramCounter(string Address);
+    string getAddress();
 };
 
 #endif
-
