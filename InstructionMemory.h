@@ -22,6 +22,8 @@ class InstructionMemory
 		string getRD();
 		string getOffset();
 		string getShift();
+		unordered_map<int, string> getMap();
+		string getFunctField();
 
 };
 #endif
