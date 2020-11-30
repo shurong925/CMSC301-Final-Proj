@@ -46,7 +46,7 @@ Get the number of the first register
 */
 string RegisterFile::getFirstRegister()
 {
-  return readRegisterOne;
+  return Registers[stoi(readRegisterOne, 0, 2)];
 }
 
 /*
@@ -54,16 +54,18 @@ Get the number of the second register
 */
 string RegisterFile::getSecRegister()
 {
-  return readRegisterTwo;
+  return Registers[stoi(readRegisterTwo, 0, 2)];
 }
 
 /*
 Write to the write register with data
 @param: string of the value to write
 */
-void RegisterFile::write(string value)
+void RegisterFile::write()
 {
-  writeRegister = value;
+  if(regWrite){
+    Registers[stoi(writeRegister, 0, 2)] = writeValue;
+  }
 }
 
 /*
@@ -84,4 +86,8 @@ string RegisterFile::getValue(string index)
   //it = maplive.find(index);
   //return it->second;
   return "";
+}
+
+void RegisterFile::setWriteValue(string data){
+  writeValue = data;
 }
