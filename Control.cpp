@@ -21,8 +21,9 @@ bool Control::getJump(){return jump; }
 bool Control::getMemToReg(){return memtoReg;}
 string Control::getALUOp(){return ALUop;}
 
-void Control::setValues()
+void Control::setValues(string opCode)
 {
+	opField = opCode;
 	//from table on page 269 of text
 	//r - format
 	if(opField == "000000"){
