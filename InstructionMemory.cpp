@@ -41,4 +41,11 @@ void InstructionMemory::getAddress(int address){
 	currentInstruction = Instructions[currentAddress];
 }
 
+unordered_map<int, string> InstructionMemory::getMap(){
+	return Instructions;
+}
+
+string InstructionMemory::getFunctField(){
+	return currentInstruction.substr(26);
+}
 
