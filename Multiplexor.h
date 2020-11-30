@@ -6,14 +6,14 @@ using namespace std;
 class Multiplexor{
 	private:
 		bool controlInput;
-		int dataOne;
-		int dataTwo;
+		string dataOne;
+		string dataTwo;
 
 	public:
-		Multiplexor(bool ci);
+		Multiplexor();
 		~Multiplexor();
-		int getData();
+		string getData();
 		void setInput(bool ci);
-		void setData(int one, int two);
+		void setData(string one, string two);
 };
 #endif
