@@ -26,10 +26,10 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   ShiftLeft SLTwo = ShiftLeft();
   SignExtend SE = SignExtend();
   Multiplexor MUXOne = Multiplexor();
-  Multiplexor MuxTwo = Multiplexor();
-  Multiplexor MuxThree = Multiplexor();
-  Multiplexor MuxFour = Multiplexor();
-  Multiplexor MuxFive = Multiplexor();
+  Multiplexor MUXTwo = Multiplexor();
+  Multiplexor MUXThree = Multiplexor();
+  Multiplexor MUXFour = Multiplexor();
+  Multiplexor MUXFive = Multiplexor();
   ALUControl ALUC = ALUControl();
   ALU ALUOne = ALU();
   ALU AdderOne = ALU();
@@ -124,13 +124,26 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     cout << "\n" << endl;
 
     //print output of register file
-    //this needs to be done after writing the the actual registers i think
+    string ReadDataOne = RF.getFirstRegister();
+    string ReadDataTwo = RF.getSecRegister();
+    cout << "Output of Register file: " << endl;
+    cout << "Read Data One: " << ReadDataOne << endl;
+    cout << "Read Data Two: " << ReadDataTwo << endl;
+    cout << "\n" << endl;
+
 
 
     //print input to to multiplexor two (in between registers and alu)
-
+    MUXTwo.setData(ReadDataTwo, Extended);
+    MUXTwo.setInput(Control.getaluSrc());
+    cout << "The input to multiplexor two: " << endl;
+    cout << "Read Data Two: " << ReadDataTwo << endl;
+    cout << "The ALU Src: " << Control.getaluSrc() << endl;
     //print output of multiplexor two
-
+    cout << "Output of Multiplexor two: " << endl;
+    string MUXTwoData = MUXTwo.getData();
+    cout << "Value to be used in ALU: " << MUXTwoData << endl;
+    cout << "\n" << endl;
 
     //print input to ALU control
     cout << "Input to ALU control: " << endl;
@@ -142,17 +155,32 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     string Operation = ALUC.getOp();
     cout << "Output of ALU control: " << endl;
     cout << "The operation to be performed: " << Operation;
+    cout << "\n" << endl;
 
 
     //print input to ALU one
-
+    cout << "Input to ALU One: " << endl;
+    cout << "Read data one: " << ReadDataOne << endl;
+    cout << "Output of multiplexor two: " << MUXTwoData << endl;
+    cout << "Operation from ALU control: " << Operation << endl;
+    ALUOne.setOperation(Operation);
+    ALUOne.setReadDataOne(ReadDataOne);
+    ALUOne.setReadDataTwo(MUXTwoData);
     //print output of ALU one
-
+    string ALUOneResult = ALUOne.getResult();
+    cout << "Output of ALUOne: " << endl;
+    cout << "ALU One Result: " << ALUOneResult << endl;
+    cout << "\n" << endl;
 
 
     //print input to data memory
-
+    cout << "Input to data memory: " << endl;
+    cout << "ALU Result: " << ALUOneResult << endl;
+    cout << "Write Data: " << ReadDataTwo << endl;
+    cout << "Value of MemWrite: " << Control.getmemWrite() << endl;
+    cout << "Value of MemRead: "  << Control.getmemRead() << endl;
     //print output from data memory
+    cout << "\n" << endl;
 
 
 
@@ -162,6 +190,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
 
     //print input to register file (write data)
+    //this is where an actual write will happen so print the write input
 
 
 
