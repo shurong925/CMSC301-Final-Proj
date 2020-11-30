@@ -6,11 +6,11 @@ using namespace std;
 class ProgramCounter
 {
  private:
-   string address; //stores the result
+   int address; //stores the result
 
  public:
-    ProgramCounter(string Address);
-    string getAddress();
+    ProgramCounter();
+    int getAddress();
 };
 
 #endif
