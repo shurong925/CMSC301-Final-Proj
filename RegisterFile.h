@@ -20,7 +20,7 @@ class RegisterFile
    bool regWrite; //the boolean indicator for whether to write to a register or not (Instr Memory)
    string writeRegister; //the register to be written to (Instr Memory)
 
-   string writeValue; //the value to be written to a register getting from ALU
+   string writeValue; //the value to be written to a register from data memory
 
  public:
    RegisterFile(unordered_map<int, string> Registers); //constructor of RegisterFile
@@ -35,10 +35,11 @@ class RegisterFile
    string getFirstRegister(); //return the number of the first register
    string getSecRegister(); //return the number of the second register
    string getWriteRegister(); //return the number of the write register
-   void write(string value); //write the value to the writeRegister
+   void write(); //write the value to the writeRegister
 
    string getValue(string index); //return the value stroed in a register
    void writeInstructionOrNot(bool indicator);
+   void setWriteValue(string data);
 
 };
 
