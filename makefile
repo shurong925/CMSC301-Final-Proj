@@ -5,7 +5,7 @@ CCFLAGS = -std=c++11 -Wall -Wno-deprecated -Werror=return-type -g
 all:Processor
 
 Processor: $(OBJS)
-	$(CC) $(CCFLAGS) -o ASM $(OBJS)
+	$(CC) $(CCFLAGS) -o Processor $(OBJS)
 
 Processor.o: Processor.cpp
 	$(CC) $(CCFLAGS) -c Processor.cpp
