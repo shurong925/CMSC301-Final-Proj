@@ -14,9 +14,9 @@ class ShiftLeft
     string shift; //stores the string to be shifted
 
  public:
-   ShiftLeft(string result);
+   ShiftLeft();
    ~ShiftLeft();
-   void shiftLeftTwo(string shift);
+   void shiftLeftTwo(string shifter);
    string getShifted();
 };
 
