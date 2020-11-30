@@ -17,6 +17,69 @@
 
 using namespace std;
 
+void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control)
+{
+
+  int CurrentAddress = PC.getAddress();
+  IM.getAddress(CurrentAddress);
+  string CurrentRS = IM.getRS();
+  string CurrentRT = IM.getRT();
+  string CurrentRD = IM.getRD();
+  string CurrentOpCode = IM.getOpcode();
+  string CurrentOffset = IM.getOffset();
+  //
+  // bool controlInput1;
+  // //if(CurrentRD == NULL)
+  //   //controlInput1 = false;
+  // //else
+  //   //controlInput1 = true;
+  //
+  // Multiplexor Mul1 = Multiplexor(controlInput1);
+  // Mul1.setInput(controlInput1);
+  // Mul1.getData(); //Not sure how you initialize Data 1 and Data 2
+  //
+  // RF.setFirstRegister(CurrentRS);
+  // RF.setSecondRegister(CurrentRD);
+  // RF.writeInstructionOrNot(controlInput1);
+  //
+  // //if(RF.writeCondition() == true)
+  // //{
+  //  // RF.setWriteRegister(CurrentRD);
+  // //}
+  //
+  // string firstRegister = RF.getFirstRegister();
+  // string secondRegister = RF.getSecRegister();
+  // string writeRegister = RF.getWriteRegister();
+  //
+  // string firstValue = RF.getValue(firstRegister);
+  // string secondValue = RF.getValue(secondRegister);
+  //
+  // SignExtend SE = SignExtend(CurrentOffset);
+  // string Extended = SE.getExtended();
+  //
+  // bool controlInput2 = false;
+  // Multiplexor Mul2 = Multiplexor(controlInput1);
+  // Mul1.setInput(controlInput1);
+  // Mul1.getData(); //Still not sure how to use multiplexor
+  //
+  // string Opcode = Control.getALUOp();
+  //
+  // //ALUControl ALUControl();
+  // //ALUControl.setOp(OpCode);
+  // //string ALUOP = ALUControl.getOp();
+  //
+  // //ALU ALUone();
+  // //ALUone.setReadDataOne(firstValue);
+  // //ALUone.setReadDataTwo(); //This should be the value passed from multiplexor
+  // //string Result = ALUone.getResult();
+  // //string ZERO = ALUone.getOutput();
+  //
+  //
+  //
+
+}
+
+
 int main(int argc, char *argv[])
 {
   //To open the input file for reading
@@ -71,7 +134,7 @@ int main(int argc, char *argv[])
   //To remind the user that the file cannot be opened
   if (!Data)
   {
-      cerr << "Error: could not open file: " << argv[2] << endl;
+      cerr << "Error: could not open file: " << memory_contents_input << endl;
       exit(1);
   }
   string s1;
@@ -84,7 +147,7 @@ int main(int argc, char *argv[])
       string key = s1.substr(0, equals);
       string value = s1.substr(equals+1);
       dataMemory[value] = key;
-      //std::cout << key << std::endl;
+      //std::cout << key << " " << value << std::endl;
     }
   }
   Data.close();
@@ -94,6 +157,11 @@ int main(int argc, char *argv[])
 ///////////////////////////////////////////////////////////////////////
   fstream Register;
   Register.open(register_file_input, ios::in);
+  if (!Register)
+  {
+      cerr << "Error: could not open file: " << register_file_input << endl;
+      exit(1);
+  }
   string s2;
   unordered_map<int, string> registerMemory;
   while(getline(Register,s2))
@@ -104,7 +172,7 @@ int main(int argc, char *argv[])
       int key = std::stoi(s2.substr(0, equals));
       string value = s2.substr(equals+1);
       registerMemory[key] = value;
-      std::cout << key << std::endl;
+      //std::cout << key << std::endl;
     }
   }
   Register.close();
@@ -122,6 +190,7 @@ int main(int argc, char *argv[])
 
   ASMParser *parser;
   parser = new ASMParser(program_input);
+
 
   if(parser->isFormatCorrect() == false){
     cerr << "Format of input file is incorrect " << endl;
@@ -141,76 +210,15 @@ int main(int argc, char *argv[])
   }
 
   delete parser;
-  InstructionMemory IM(instructions);
+  InstructionMemory IM = InstructionMemory(instructions);
 
-  //ProgramCounter PC = ProgramCounter(IM.) //Needs symbol table to save the address of instructions
+  ProgramCounter PC; //Needs symbol table to save the address of instructions
 
-  Control Control = Control();
+  Control Control;
 
-  //process();
+  process(DM, IM, PC, RF, Control);
   return 0;
 
 
 }
 
-void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control)
-{
-
-  // string CurrentAddress = PC.getAddress();
-  //
-  // string CurrentRS = IM.getRS();
-  // string CurrentRT = IM.getRT();
-  // string CurrentRD = IM.getRD();
-  // string CurrentOpCode = IM.getOpcode();
-  // string CurrentOffset = IM.getOffset();
-  //
-  // bool controlInput1;
-  // //if(CurrentRD == NULL)
-  //   //controlInput1 = false;
-  // //else
-  //   //controlInput1 = true;
-  //
-  // Multiplexor Mul1 = Multiplexor(controlInput1);
-  // Mul1.setInput(controlInput1);
-  // Mul1.getData(); //Not sure how you initialize Data 1 and Data 2
-  //
-  // RF.setFirstRegister(CurrentRS);
-  // RF.setSecondRegister(CurrentRD);
-  // RF.writeInstructionOrNot(controlInput1);
-  //
-  // //if(RF.writeCondition() == true)
-  // //{
-  //  // RF.setWriteRegister(CurrentRD);
-  // //}
-  //
-  // string firstRegister = RF.getFirstRegister();
-  // string secondRegister = RF.getSecRegister();
-  // string writeRegister = RF.getWriteRegister();
-  //
-  // string firstValue = RF.getValue(firstRegister);
-  // string secondValue = RF.getValue(secondRegister);
-  //
-  // SignExtend SE = SignExtend(CurrentOffset);
-  // string Extended = SE.getExtended();
-  //
-  // bool controlInput2 = false;
-  // Multiplexor Mul2 = Multiplexor(controlInput1);
-  // Mul1.setInput(controlInput1);
-  // Mul1.getData(); //Still not sure how to use multiplexor
-  //
-  // string Opcode = Control.getALUOp();
-  //
-  // //ALUControl ALUControl();
-  // //ALUControl.setOp(OpCode);
-  // //string ALUOP = ALUControl.getOp();
-  //
-  // //ALU ALUone();
-  // //ALUone.setReadDataOne(firstValue);
-  // //ALUone.setReadDataTwo(); //This should be the value passed from multiplexor
-  // //string Result = ALUone.getResult();
-  // //string ZERO = ALUone.getOutput();
-  //
-  //
-  //
-
-}
