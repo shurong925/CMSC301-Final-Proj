@@ -1,9 +1,9 @@
-#include "RegisterFile.h";
+#include "RegisterFile.h"
 /*
 constructor of RegisterFile
 @param: std::map<int, string>
 */
-RegisterFile::RegisterFile(map<int, string> Collection)
+RegisterFile::RegisterFile(unordered_map<int, string> Collection)
 {
   Registers = Collection;
 }
@@ -85,4 +85,3 @@ string RegisterFile::getValue(string index)
   //return it->second;
   return "";
 }
-

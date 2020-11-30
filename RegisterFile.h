@@ -1,11 +1,11 @@
 #ifndef __REGISTERFILE_H__
 #define __REGISTERFILE_H__
 
-using namespace std;
-
 #include <iostream>
 #include <string>
-#include <map>
+#include <unordered_map>
+
+using namespace std;
 
 /* This class contains a collection of registers in which any register can be
  * read or written by specifying the number of the register in the file.
@@ -14,7 +14,7 @@ using namespace std;
 class RegisterFile
 {
  private:
-   map<int, string> Registers; //collection of all 32 registers (Instr Memory)
+   unordered_map<int, string> Registers; //collection of all 32 registers (Instr Memory)
    string readRegisterOne; //the first register to be read (Instr Memory)
    string readRegisterTwo; //the second register to be read (Instr Memory)
    bool regWrite; //the boolean indicator for whether to write to a register or not (Instr Memory)
@@ -23,7 +23,7 @@ class RegisterFile
    string writeValue; //the value to be written to a register getting from ALU
 
  public:
-   RegisterFile(map<int, string> Registers); //constructor of RegisterFile
+   RegisterFile(unordered_map<int, string> Registers); //constructor of RegisterFile
    ~RegisterFile(); //destructor
 
    void setFirstRegister(string One); //set the first register to be read

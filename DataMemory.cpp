@@ -1,11 +1,14 @@
-#include "DataMemory.h";
+#include "DataMemory.h"
+using namespace std;
 
-string read()
+DataMemory::DataMemory(unordered_map<string, string> Mem)
 {
-    return " "; //need to finish this!
-}
-void write(string writeValue, int writeRegister)
-{
-    
+  Memory = Mem;
 }
 
+DataMemory::~DataMemory(){}
+
+string DataMemory::read(string key)
+{
+  return Memory[key];
+}
