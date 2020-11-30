@@ -50,15 +50,15 @@ string ALU::getResult()
 {
   //string op;
   if(op == "0010"){
-    result = bitset<32>((stoi(readDataOne) + stoi(readDataTwo))).to_string();
+    result = bitset<32>((stoi(readDataOne, 0, 2) + stoi(readDataTwo, 0, 2))).to_string();
     return result;
   }
   else if(op == "0110"){
-    result = bitset<32>((stoi(readDataOne) - stoi(readDataTwo))).to_string();
+    result = bitset<32>((stoi(readDataOne, 0, 2) - stoi(readDataTwo, 0, 2))).to_string();
     return result;
   }
   else if(op == "0111"){
-    if(stoi(readDataOne) > stoi(readDataTwo))
+    if(stoi(readDataOne, 0, 2) > stoi(readDataTwo, 0, 2))
           result = readDataTwo;
      else
           result = readDataOne;
@@ -72,9 +72,10 @@ string ALU::getResult()
 bool ALU::getOutput()
 {
   if(stoi(result) == 0){
-    return true;
+    zero = true;
   }
-  return false;
+  zero = false;
+  return zero;
 }
 
 //Return the value to be written to the write register
