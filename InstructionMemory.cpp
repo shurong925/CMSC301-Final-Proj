@@ -40,3 +40,5 @@ void InstructionMemory::getAddress(int address){
 	currentAddress = address;
 	currentInstruction = Instructions[currentAddress];
 }
+
+
