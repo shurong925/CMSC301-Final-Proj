@@ -19,24 +19,187 @@ using namespace std;
 
 void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control)
 {
-
+  //put a loop here that does the following for every instruction in IM
   int CurrentAddress = PC.getAddress();
-  IM.getAddress(CurrentAddress);
-  string CurrentRS = IM.getRS();
-  string CurrentRT = IM.getRT();
-  string CurrentRD = IM.getRD();
-  string CurrentOpCode = IM.getOpcode();
-  string CurrentOffset = IM.getOffset();
-  Control.setValues(CurrentOpCode);
-  //output all of the control lines
-  cout << Control.getRegWrite() << endl;
-  cout << Control.getmemWrite() << endl;
-  cout << Control.getaluSrc() << endl;
-  cout << Control.getRegDst() << endl;
-  cout << Control.getJump() << endl;
-  cout << Control.getMemToReg() << endl;
-  cout << Control.getALUOp() << endl;
-  cout << Control.getmemRead() << endl;
+  //initialize the other objects that we need
+  ShiftLeft SLOne = ShiftLeft();
+  ShiftLeft SLTwo = ShiftLeft();
+  SignExtend SE = SignExtend();
+  Multiplexor MUXOne = Multiplexor();
+  Multiplexor MuxTwo = Multiplexor();
+  Multiplexor MuxThree = Multiplexor();
+  Multiplexor MuxFour = Multiplexor();
+  Multiplexor MuxFive = Multiplexor();
+  ALUControl ALUC = ALUControl();
+  ALU ALUOne = ALU();
+  ALU AdderOne = ALU();
+  ALU AdderTwo = ALU();
+
+  while(IM.getMap().find(CurrentAddress) != IM.getMap().end()){
+    //int CurrentAddress = PC.getAddress(); this is commented out for now to avoid infinite loop
+    //print output of PC
+    cout << "Output of Program Counter: " <<  CurrentAddress << endl;
+    IM.getAddress(CurrentAddress);
+    string CurrentRS = IM.getRS();
+    string CurrentRT = IM.getRT();
+    string CurrentRD = IM.getRD();
+    string CurrentOpCode = IM.getOpcode();
+    string CurrentOffset = IM.getOffset();
+    string CurrentShift = IM.getShift();
+    string CurrentFunct = IM.getFunctField();
+    Control.setValues(CurrentOpCode);
+    cout << "\n" << endl;
+
+    //print the input to IM
+    cout << "Input to IM: the current address: " << CurrentAddress << endl;
+    //print the output of IM
+    cout << "Output of IM: the current RS: " << CurrentRS << endl; 
+    cout << "Output of IM: the current RT: " << CurrentRT << endl; 
+    cout << "Output of IM: the current RD: " << CurrentRD << endl; 
+    cout << "Output of IM: the current Offset: " << CurrentOffset << endl; 
+    cout << "Output of IM: the current opcode: " << CurrentOpCode << endl; 
+    cout << "\n" << endl;
+
+
+    //output all of the control lines (ie the input to control)
+    cout << "The input to control: the control lines: " << endl;
+    cout << "Value of RegWrite: " << Control.getRegWrite() << endl;
+    cout << "Value of MemWrite: " << Control.getmemWrite() << endl;
+    cout << "Value of ALUSrc: " << Control.getaluSrc() << endl;
+    cout << "Value of RegDst: " << Control.getRegDst() << endl;
+    cout << "Value of Jump: " << Control.getJump() << endl;
+    cout << "Value of MemtoReg: " << Control.getMemToReg() << endl;
+    cout << "Value of ALUOp: " << Control.getALUOp() << endl;
+    cout << "Value of MemRead: " << Control.getmemRead() << endl; 
+    cout << "\n" << endl;
+
+
+    //print input to Shift left two
+    SLOne.shiftLeftTwo(CurrentShift);
+    cout << "The input to shift left two: " << CurrentShift << endl;
+    //Print output of shift left two
+    string Shifted = SLOne.getShifted();
+    cout << "The output of shift left two: " << Shifted << endl;
+    cout << "\n" << endl;
+
+
+
+    //print input to multiplexor 1 (between instruction memory and registers)
+    cout << "Input to multiplexor 1: " << endl;
+    cout << "The current RT: " << CurrentRT << endl;
+    cout << "The current RD: " << CurrentRD << endl;
+    cout << "Value of RegDst: " << Control.getRegDst() << endl;
+    MUXOne.setData(CurrentRT, CurrentRD);
+    MUXOne.setInput(Control.getRegDst());
+    //print output of multiplexor one
+    cout << "Output of Multiplexor one: " << endl;
+    string MUXOneData = MUXOne.getData();
+    cout << "Value to be used as write register: " << MUXOneData << endl;
+    cout << "\n" << endl;
+
+
+    //print input to sign extend
+    cout << "Input to sign extend: " << endl;
+    SE.extend(CurrentOffset);
+    cout << "The Current Offset: " << CurrentOffset << endl;
+    //print output of sign extend
+    string Extended = SE.getExtended();
+    cout << "Output of sign extend: " << endl;
+    cout << "Extended: " << Extended << endl;
+    cout << "\n" << endl;
+
+
+
+    //print input to register file
+    //need to also implement actually writing to the registers somewhere here ***
+    RF.setFirstRegister(CurrentRS);
+    RF.setSecondRegister(CurrentRT);
+    RF.writeInstructionOrNot(Control.getRegWrite());
+    RF.setWriteRegister(MUXOneData);
+    cout << "Input to Register File: " << endl;
+    cout << "The current RS: " << CurrentRS << endl;
+    cout << "The Current RT: " << CurrentRT << endl;
+    cout << "Output of Multiplexor one: " << MUXOneData << endl;
+    cout << "RegWrite value: " << Control.getRegWrite();
+    cout << "\n" << endl;
+
+    //print output of register file
+    //this needs to be done after writing the the actual registers i think
+
+
+    //print input to to multiplexor two (in between registers and alu)
+
+    //print output of multiplexor two
+
+
+    //print input to ALU control
+    cout << "Input to ALU control: " << endl;
+    cout << "ALU Op value from control: " << Control.getALUOp() << endl;
+    cout << "Funct field from Instruction memory: " << CurrentFunct << endl;
+    ALUC.setFunct(CurrentFunct);
+    ALUC.setALUOp(Control.getALUOp());
+    //print output of ALU control
+    string Operation = ALUC.getOp();
+    cout << "Output of ALU control: " << endl;
+    cout << "The operation to be performed: " << Operation;
+
+
+    //print input to ALU one
+
+    //print output of ALU one
+
+
+
+    //print input to data memory
+
+    //print output from data memory
+
+
+
+    //print input to multiplexor three (after data memory on far righ of diagram)
+
+    //print output of multiplexor three
+
+
+    //print input to register file (write data)
+
+
+
+    // print input to second shift left two
+
+    //print output of second shift left two
+
+
+
+    //print input to first adder (top left of diagram)
+
+    //print output of firmst adder (top left of diagram)
+
+
+
+    //print input to second adder (alu result in top right)
+
+    //print output of second adder
+
+
+
+    //print input to multiplexor four (after alu result adder in top right of diagram)
+
+    //print output of multiplexor four
+
+
+
+    //print input to multiplexor five (top right of diagram)
+
+    //print output of multiplexor five
+
+
+
+    //print input to pc
+
+    CurrentAddress+=4;
+  }
+  
   //
   // bool controlInput1;
   // //if(CurrentRD == NULL)
