@@ -33,7 +33,7 @@ class Control
    Control(); //constructor
    ~Control(); //destructor
 
-   void setValues(); //Using the opField of the instruction, sets all the boolean values
+   void setValues(string opCode); //Using the opField of the instruction, sets all the boolean values
    bool getRegWrite();
    bool getmemRead();
    bool getmemWrite();
