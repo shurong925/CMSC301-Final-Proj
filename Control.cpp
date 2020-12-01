@@ -91,5 +91,9 @@ void Control::setValues(string opCode)
 		ALUop = "10";
 		branch = false;
 	}
+	else{
+		cerr << "Error: could not read opCode: " << opCode << endl;
+      	exit(1);
+	}
 
 }
