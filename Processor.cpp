@@ -33,7 +33,9 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   ALUControl ALUC = ALUControl();
   ALU ALUOne = ALU();
   ALU AdderOne = ALU();
+  AdderOne.setOperation("0010");
   ALU AdderTwo = ALU();
+  AdderTwo.setOperation("0010");
 
   while(IM.getMap().find(CurrentAddress) != IM.getMap().end()){
     //int CurrentAddress = PC.getAddress(); this is commented out for now to avoid infinite loop
@@ -179,54 +181,121 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     cout << "Write Data: " << ReadDataTwo << endl;
     cout << "Value of MemWrite: " << Control.getmemWrite() << endl;
     cout << "Value of MemRead: "  << Control.getmemRead() << endl;
+    DM.setMemWrite(Control.getmemWrite());
+    DM.setMemRead(Control.getmemRead());
+    DM.setAddress(ALUOneResult);
+    DM.setWriteData(ReadDataTwo);
     //print output from data memory
+    string DMOutput = DM.read();
+    DM.writeTheData();
+    cout << "Output of data memory: " << endl;
+    cout << "Read data: " << DMOutput << endl;
     cout << "\n" << endl;
 
 
 
     //print input to multiplexor three (after data memory on far righ of diagram)
-
+    cout << "Input to multiplexor three: " << endl;
+    cout << "Output of ALU one: " << ALUOneResult << endl;
+    cout << "Read data from data memory: " << DMOutput << endl;
+    cout << "Value of MemToReg: " << Control.getMemToReg() << endl;
+    MUXThree.setData(ALUOneResult, DMOutput);
+    MUXThree.setInput(Control.getMemToReg());    
     //print output of multiplexor three
-
+    cout << "Output of Multiplexor three: " << endl;
+    string MUXThreeData = MUXThree.getData();
+    cout << "Value to be used in Register File: " << MUXThreeData << endl;
+    cout << "\n" << endl;
 
     //print input to register file (write data)
     //this is where an actual write will happen so print the write input
-
+    cout << "Input to register file part two: " << endl;
+    cout << "Write data from multiplexor three: " << MUXThreeData << endl;
+    RF.setWriteValue(MUXThreeData);
+    RF.write();
+    cout << "\n" << endl;
 
 
     // print input to second shift left two
-
+    cout << "Input to second shift left two: " << endl;
+    cout << "Sign extended value: " << Extended << endl;
+    SLTwo.shiftLeftTwo(Extended);
+    string ShiftedTwo = SLTwo.getShifted();
     //print output of second shift left two
+    cout << "Output of second shift left two: " << endl;
+    cout << "Sign extended value shifted left by two: " << ShiftedTwo << endl;
+    cout << "\n" << endl;
 
 
 
     //print input to first adder (top left of diagram)
-
+    cout << "Input to the first adder: " << endl;
+    cout << "Address from pc: " << CurrentAddress << endl;
+    cout << "Four: 4" << endl;
     //print output of firmst adder (top left of diagram)
+    string BinaryAddress = to_string(CurrentAddress);
+    int binAddress = stoi(BinaryAddress, 0, 2);
+    AdderOne.setReadDataOne(to_string(binAddress));
+    AdderOne.setReadDataTwo("0100");
+    string AdderOneResult = AdderOne.getResult();
+    cout << "Output of first adder: " << endl;
+    cout << "PC address plus four: " << AdderOneResult << endl;
+    cout << "\n" << endl;
 
 
 
     //print input to second adder (alu result in top right)
-
+    cout << "Input to second adder: " << endl;
+    cout << "PC address plus four: " << AdderOneResult << endl;
+    cout << "Shifted two: " << ShiftedTwo << endl;
+    AdderTwo.setReadDataOne(AdderOneResult);
+    AdderTwo.setReadDataTwo(ShiftedTwo);
+    string AdderTwoResult = AdderTwo.getResult();
     //print output of second adder
-
+    cout << "Output of second adder: " << endl;
+    cout << "PC address plus jump: " << AdderTwoResult << endl;
+    cout << "\n" << endl;
 
 
     //print input to multiplexor four (after alu result adder in top right of diagram)
-
+    bool MUXFourControl;
+    if(Control.getJump() or ALUOne.getOutput()){
+      MUXFourControl = true;
+    }
+    else{
+      MUXFourControl = false;
+    }
+    cout << "Input to multiplexor four: " << endl;
+    cout << "Output of Adder one: " << AdderOneResult << endl;
+    cout << "Output of Adder two: " << AdderTwoResult << endl;
+    cout << "Value of branch or zero: " << MUXFourControl << endl;
+    MUXFour.setData(AdderOneResult, AdderTwoResult);
+    MUXFour.setInput(MUXFourControl);    
     //print output of multiplexor four
+    cout << "Output of Multiplexor four: " << endl;
+    string MUXFourData = MUXFour.getData();
+    cout << "Value to be used in Multiplexor five: " << MUXFourData << endl;
+    cout << "\n" << endl;
 
 
 
     //print input to multiplexor five (top right of diagram)
-
+    cout << "Input to multiplexor five: " << endl;
+    cout << "Output of shift left one: " << ShiftedTwo << endl;
+    cout << "Output of Multiplexor four: " << MUXFourData << endl;
+    cout << "Value of jump: " << Control.getJump() << endl;
+    MUXFive.setData(ShiftedTwo, MUXFourData);
+    MUXFour.setInput(Control.getJump());    
     //print output of multiplexor five
-
-
+    cout << "Output of Multiplexor five: " << endl;
+    string MUXFiveData = MUXFive.getData();
+    cout << "Value to be used in Program Counter five: " << MUXFiveData << endl;
+    cout << "\n" << endl;
 
     //print input to pc
-
-    CurrentAddress+=4;
+    cout << "Input to PC: " << endl;
+    cout << "Output of multiplexor 5: " << MUXFiveData << endl;
+    PC.setAddress(MUXFiveData);
   }
   
   //
