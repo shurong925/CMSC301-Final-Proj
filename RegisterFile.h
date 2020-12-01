@@ -40,6 +40,7 @@ class RegisterFile
    string getValue(string index); //return the value stroed in a register
    void writeInstructionOrNot(bool indicator);
    void setWriteValue(string data);
+   unordered_map<int, string> getRegisters();
 
 };
 
