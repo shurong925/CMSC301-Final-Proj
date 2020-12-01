@@ -12,7 +12,7 @@ OpcodeTable::OpcodeTable()
 
     myArray[J].name = "j"; myArray[J].numOps = 1;  myArray[J].rdPos = -1;  myArray[J].rsPos = -1;  myArray[J].rtPos = -1;  myArray[J].immPos = 0; myArray[J].instType = JTYPE; myArray[J].op_field = "000010"; myArray[J].immLabel = true;
 
-    myArray[SLT].name = "slt"; myArray[SLT].numOps = 3;  myArray[SLT].rdPos = 0;  myArray[SLT].rsPos = 1;  myArray[SLT].rtPos = 2;  myArray[SLT].immPos = -1;  myArray[SLT].instType = RTYPE; myArray[SLT].op_field = "000000";   myArray[SLT].funct_field = "101010";
+    myArray[SLT].name = "slt"; myArray[SLT].numOps = 3;  myArray[SLT].rdPos = 0;  myArray[SLT].rsPos = 1;  myArray[SLT].rtPos = 2;  myArray[SLT].immPos = -1;  myArray[SLT].instType = RTYPE; myArray[SLT].op_field = "000000"; myArray[SLT].funct_field = "101010";
 
     myArray[BEQ].name = "beq"; myArray[BEQ].numOps = 3;  myArray[BEQ].rtPos = 0; myArray[BEQ].rsPos = 1; myArray[BEQ].immPos = 2; myArray[BEQ].instType = ITYPE; myArray[BEQ].op_field = "000100";
 
