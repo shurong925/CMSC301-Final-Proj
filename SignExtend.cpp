@@ -8,7 +8,9 @@ SignExtend::~SignExtend(){}
 void SignExtend::extend(string Offset)
 {
 	offset = Offset;
-  extended = bitset<32>(stoi(offset)).to_string();
+	string extend = "000000000000000000000";
+	extended = extend + offset;
+  //extended = bitset<32>(stoi(offset)).to_string();
 }
 
 string SignExtend::getExtended()
