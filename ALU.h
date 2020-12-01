@@ -38,6 +38,7 @@ class ALU
    string getResult(); //Compute the result of function performed
    bool getOutput(); //Find out the output of whether it's 0 or 1
    string getWriteValue(); //Return the value to be written to the write register
+   string adder();
 
 };
 
