@@ -17,12 +17,13 @@
 
 using namespace std;
 
-void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control)
+void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control, bool w, string of, unordered_map<int, string> machineInstructions, bool print_memory_contents, string output_mode)
 {
+
   //write to an output file
-  ofstream MyFile("output.txt");
+  ofstream MyFile(of);
   int CurrentAddress = PC.getAddress();
-  //initialize the other objects that we need
+  //initialize the other objects that we neen
   ShiftLeft SLOne = ShiftLeft();
   ShiftLeft SLTwo = ShiftLeft();
   SignExtend SE = SignExtend();
@@ -38,12 +39,16 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   ALU AdderTwo = ALU();
   AdderTwo.setOperation("0010");
 
-  while(IM.getMap().find(CurrentAddress) != IM.getMap().end())
-  {
-    //print output of PC
-    MyFile << "Output of Program Counter: " <<  CurrentAddress << "\n";
 
+  while(IM.getMap().find(CurrentAddress) != IM.getMap().end()){
+
+    if(output_mode == "single_step"){
+      getchar();
+    }
+    
     IM.getAddress(CurrentAddress);
+    
+    string CurrentInstruction = machineInstructions[CurrentAddress];
     string CurrentRS = IM.getRS();
     string CurrentRT = IM.getRT();
     string CurrentRD = IM.getRD();
@@ -51,252 +56,533 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     string CurrentOffset = IM.getOffset();
     string CurrentShift = IM.getShift();
     string CurrentFunct = IM.getFunctField();
+    
     Control.setValues(CurrentOpCode);
-    MyFile << "\n" << "\n";
-
-    //print the input to IM
-    MyFile << "Input to IM: the current address: " << CurrentAddress << "\n";
-    MyFile << "Input to IM: the current address: ";
-    MyFile << CurrentAddress;
-    MyFile << "\n";
-    //print the output of IM
-    MyFile << "Output of IM: the current RS: " << CurrentRS << "\n";
-    MyFile << "Output of IM: the current RS: " << CurrentRS << "\n";
-    MyFile << "Output of IM: the current RT: " << CurrentRT << "\n";
-    MyFile << "Output of IM: the current RD: " << CurrentRD << "\n";
-    MyFile << "Output of IM: the current Offset: " << CurrentOffset << "\n";
-    MyFile << "Output of IM: the current opcode: " << CurrentOpCode << "\n";
-    MyFile << "\n" << "\n";
-
-
-    //output all of the control lines (ie the input to control)
-    MyFile << "The input to control: the control lines: " << "\n";
-    MyFile << "Value of RegWrite: " << Control.getRegWrite() << "\n";
-    MyFile << "Value of MemWrite: " << Control.getmemWrite() << "\n";
-    MyFile << "Value of ALUSrc: " << Control.getaluSrc() << "\n";
-    MyFile << "Value of RegDst: " << Control.getRegDst() << "\n";
-    MyFile << "Value of Jump: " << Control.getJump() << "\n";
-    MyFile << "Value of MemtoReg: " << Control.getMemToReg() << "\n";
-    MyFile << "Value of ALUOp: " << Control.getALUOp() << "\n";
-    MyFile << "Value of MemRead: " << Control.getmemRead() << "\n";
-    MyFile << "\n" << "\n";
-
-
-    //print input to Shift left two
     SLOne.shiftLeftTwo(CurrentShift);
-    MyFile << "The input to shift left two: " << CurrentShift << "\n";
-    //Print output of shift left two
     string Shifted = SLOne.getShifted();
-    MyFile << "The output of shift left two: " << Shifted << "\n";
-    MyFile << "\n" << "\n";
-
-    //print input to multiplexor 1 (between instruction memory and registers)
-    MyFile << "Input to multiplexor 1: " << "\n";
-    MyFile << "The current RT: " << CurrentRT << "\n";
-    MyFile << "The current RD: " << CurrentRD << "\n";
-    MyFile << "Value of RegDst: " << Control.getRegDst() << "\n";
+    
     MUXOne.setData(CurrentRT, CurrentRD);
     MUXOne.setInput(Control.getRegDst());
-    //print output of multiplexor one
-    MyFile << "Output of Multiplexor one: " << "\n";
     string MUXOneData = MUXOne.getData();
-    MyFile << "Value to be used as write register: " << MUXOneData << "\n";
-    MyFile << "\n" << "\n";
 
-
-    //print input to sign extend
-    MyFile << "Input to sign extend: " << "\n";
     SE.extend(CurrentOffset);
-    MyFile << "The Current Offset: " << CurrentOffset << "\n";
-    //print output of sign extend
     string Extended = SE.getExtended();
-    MyFile << "Output of sign extend: " << "\n";
-    MyFile << "Extended: " << Extended << "\n";
-    MyFile << "\n" << "\n";
-
-
-    //print input to register file
-    //need to also implement actually writing to the registers somewhere here ***
     RF.setFirstRegister(CurrentRS);
     RF.setSecondRegister(CurrentRT);
     RF.writeInstructionOrNot(Control.getRegWrite());
     RF.setWriteRegister(MUXOneData);
-    MyFile << "Input to Register File: " << "\n";
-    MyFile << "The current RS: " << CurrentRS << "\n";
-    MyFile << "The Current RT: " << CurrentRT << "\n";
-    MyFile << "Output of Multiplexor one: " << MUXOneData << "\n";
-    MyFile << "RegWrite value: " << Control.getRegWrite();
-    MyFile << "\n" << "\n";
 
-    //print output of register file
     string ReadDataOne = RF.getFirstRegister();
     string ReadDataTwo = RF.getSecRegister();
-    MyFile << "Output of Register file: " << "\n";
-    MyFile << "Read Data One: " << ReadDataOne << "\n";
-    MyFile << "Read Data Two: " << ReadDataTwo << "\n";
-    MyFile << "\n" << "\n";
 
-
-
-    //print input to to multiplexor two (in between registers and alu)
-    MUXTwo.setData(ReadDataTwo, Extended);
+    MUXTwo.setData(Extended, ReadDataTwo);
     MUXTwo.setInput(Control.getaluSrc());
-    MyFile << "The input to multiplexor two: " << "\n";
-    MyFile << "Read Data Two: " << ReadDataTwo << "\n";
-    MyFile << "The ALU Src: " << Control.getaluSrc() << "\n";
-    //print output of multiplexor two
-    MyFile << "Output of Multiplexor two: " << "\n";
     string MUXTwoData = MUXTwo.getData();
-    MyFile << "Value to be used in ALU: " << MUXTwoData << "\n";
-    MyFile << "\n" << "\n";
 
-    //print input to ALU control
-    MyFile << "Input to ALU control: " << "\n";
-    MyFile << "ALU Op value from control: " << Control.getALUOp() << "\n";
-    MyFile << "Funct field from Instruction memory: " << CurrentFunct << "\n";
     ALUC.setFunct(CurrentFunct);
     ALUC.setALUOp(Control.getALUOp());
-    //print output of ALU control
+
     string Operation = ALUC.getOp();
-    MyFile << "Output of ALU control: " << "\n";
-    MyFile << "The operation to be performed: " << Operation;
-    MyFile << "\n" << "\n";
 
-
-    //print input to ALU one
-    MyFile << "Input to ALU One: " << "\n";
-    MyFile << "Read data one: " << ReadDataOne << "\n";
-    MyFile << "Output of multiplexor two: " << MUXTwoData << "\n";
-    MyFile << "Operation from ALU control: " << Operation << "\n";
     ALUOne.setOperation(Operation);
     ALUOne.setReadDataOne(ReadDataOne);
-    ALUOne.setReadDataTwo(MUXTwoData);
-    //print output of ALU one
+    ALUOne.setReadDataTwo(MUXTwoData, !Control.getaluSrc());
     string ALUOneResult = ALUOne.getResult();
-    MyFile << "Output of ALUOne: " << "\n";
-    MyFile << "ALU One Result: " << ALUOneResult << "\n";
-    MyFile << "\n" << "\n";
 
 
-    //print input to data memory
-    MyFile << "Input to data memory: " << "\n";
-    MyFile << "ALU Result: " << ALUOneResult << "\n";
-    MyFile << "Write Data: " << ReadDataTwo << "\n";
-    MyFile << "Value of MemWrite: " << Control.getmemWrite() << "\n";
-    MyFile << "Value of MemRead: "  << Control.getmemRead() << "\n";
     DM.setMemWrite(Control.getmemWrite());
     DM.setMemRead(Control.getmemRead());
     DM.setAddress(ALUOneResult);
     DM.setWriteData(ReadDataTwo);
-    //print output from data memory
+
     string DMOutput = DM.read();
     DM.writeTheData();
-    MyFile << "Output of data memory: " << "\n";
-    MyFile << "Read data: " << DMOutput << "\n";
-    MyFile << "\n" << "\n";
-
-
-
-    //print input to multiplexor three (after data memory on far righ of diagram)
-    MyFile << "Input to multiplexor three: " << "\n";
-    MyFile << "Output of ALU one: " << ALUOneResult << "\n";
-    MyFile << "Read data from data memory: " << DMOutput << "\n";
-    MyFile << "Value of MemToReg: " << Control.getMemToReg() << "\n";
-    MUXThree.setData(ALUOneResult, DMOutput);
+    MUXThree.setData(DMOutput, ALUOneResult);
     MUXThree.setInput(Control.getMemToReg());
-    //print output of multiplexor three
-    MyFile << "Output of Multiplexor three: " << "\n";
     string MUXThreeData = MUXThree.getData();
-    MyFile << "Value to be used in Register File: " << MUXThreeData << "\n";
-    MyFile << "\n" << "\n";
 
-    //print input to register file (write data)
-    //this is where an actual write will happen so print the write input
-    MyFile << "Input to register file part two: " << "\n";
-    MyFile << "Write data from multiplexor three: " << MUXThreeData << "\n";
     RF.setWriteValue(MUXThreeData);
     RF.write();
-    MyFile << "\n" << "\n";
 
-
-    // print input to second shift left two
-    MyFile << "Input to second shift left two: " << "\n";
-    MyFile << "Sign extended value: " << Extended << "\n";
     SLTwo.shiftLeftTwo(Extended);
     string ShiftedTwo = SLTwo.getShifted();
-    //print output of second shift left two
-    MyFile << "Output of second shift left two: " << "\n";
-    MyFile << "Sign extended value shifted left by two: " << ShiftedTwo << "\n";
-    MyFile << "\n" << "\n";
 
-
-    //print input to first adder (top left of diagram)
-    MyFile << "Input to the first adder: " << "\n";
-    MyFile << "Address from pc: " << CurrentAddress << "\n";
-    MyFile << "Four: 4" << "\n";
-    //print output of firmst adder (top left of diagram)
-
-    AdderOne.setReadDataOne(to_string(CurrentAddress));
-    AdderOne.setReadDataTwo("4");
     string AdderOneResult = AdderOne.adder(CurrentAddress, 4);
-    MyFile << "Output of first adder: " << "\n";
-    MyFile << "PC address plus four: " << AdderOneResult << "\n";
-    MyFile << "\n" << "\n";
-
-
-    //this adder says the numbers are too large to add
-    //print input to second adder (alu result in top right)
-    MyFile << "Input to second adder: " << "\n";
-    MyFile << "PC address plus four: " << AdderOneResult << "\n";
-    MyFile << "Shifted two: " << ShiftedTwo << "\n";
     string AdderTwoResult = AdderTwo.adder(stoi(AdderOneResult, 0, 2), stoi(ShiftedTwo, 0, 2));
-    //print output of second adder
-    MyFile << "Output of second adder: " << "\n";
-    MyFile << "PC address plus jump: " << AdderTwoResult << "\n";
-    MyFile << "\n" << "\n";
-
-
-    //print input to multiplexor four (after alu result adder in top right of diagram)
     bool MUXFourControl;
-    if(Control.getBranch() or ALUOne.getOutput()){
+
+    if(Control.getBranch() and ALUOne.getOutput()){
       MUXFourControl = true;
     }
     else{
       MUXFourControl = false;
     }
-    MyFile << "Input to multiplexor four: " << "\n";
-    MyFile << "Output of Adder one: " << AdderOneResult << "\n";
-    MyFile << "Output of Adder two: " << AdderTwoResult << "\n";
-    MyFile << "Value of branch or zero: " << MUXFourControl << "\n";
-    MUXFour.setData(AdderOneResult, AdderTwoResult);
+
+    MUXFour.setData(AdderTwoResult, AdderOneResult);
     MUXFour.setInput(MUXFourControl);
-    //print output of multiplexor four
-    MyFile << "Output of Multiplexor four: " << "\n";
     string MUXFourData = MUXFour.getData();
-    MyFile << "Value to be used in Multiplexor five: " << MUXFourData << "\n";
-    MyFile << "\n" << "\n";
-
-
-
-    //print input to multiplexor five (top right of diagram)
-    MyFile << "Input to multiplexor five: " << "\n";
-    MyFile << "Output of shift left one: " << ShiftedTwo << "\n";
-    MyFile << "Output of Multiplexor four: " << MUXFourData << "\n";
-    MyFile << "Value of jump: " << Control.getJump() << "\n";
-    MUXFive.setData(ShiftedTwo, MUXFourData);
-    MUXFour.setInput(Control.getJump());
-    //print output of multiplexor five
-    MyFile << "Output of Multiplexor five: " << "\n";
+    MUXFive.setData(Shifted, MUXFourData);
+    MUXFive.setInput(Control.getJump());
     string MUXFiveData = MUXFive.getData();
-    MyFile << "Value to be used in Program Counter: " << MUXFiveData << "\n";
-    MyFile << "\n" << "\n";
-
-    //print input to pc
-    MyFile << "Input to PC: " << "\n";
-    MyFile << "Output of multiplexor 5: " << MUXFiveData << "\n";
     PC.setAddress(MUXFiveData);
-    CurrentAddress = PC.getAddress();
 
+
+
+    if(w){
+        MyFile << setbase(16);
+        MyFile << "The Current Instruction: " << CurrentInstruction << "\n";
+        MyFile << "Output of Program Counter: 0x" <<  CurrentAddress << "\n";
+
+        
+        MyFile << "\n" << "\n";
+
+        //print the input to IM
+        MyFile << "Input to IM: the current address: 0x" << CurrentAddress << "\n";
+  
+        MyFile << "\n";
+        //print the output of IM
+        MyFile << "Output of IM: the current RS: 0x" << stoi(CurrentRS,0,2) << "\n";
+        MyFile << "Output of IM: the current RS: 0x" << stoi(CurrentRS, 0,2) << "\n";
+        MyFile << "Output of IM: the current RT: 0x" << stoi(CurrentRT,0,2) << "\n";
+        MyFile << "Output of IM: the current RD: 0x" << stoi(CurrentRD,0,2) << "\n";
+        MyFile << "Output of IM: the current Offset: 0x" << stoi(CurrentOffset,0,2) << "\n";
+        MyFile << "Output of IM: the current opcode: 0x" << stoi(CurrentOpCode,0,2) << "\n";
+        MyFile << "\n" << endl;
+
+
+        //output all of the control lines (ie the input to control)
+        MyFile << "The input to control: the control lines: " << "\n";
+        MyFile << "Value of RegWrite: 0x" << Control.getRegWrite() << "\n";
+        MyFile << "Value of MemWrite: 0x" << Control.getmemWrite() << "\n";
+        MyFile << "Value of ALUSrc: 0x" << Control.getaluSrc() << "\n";
+        MyFile << "Value of RegDst: 0x" << Control.getRegDst() << "\n";
+        MyFile << "Value of Jump: 0x" << Control.getJump() << "\n";
+        MyFile << "Value of MemtoReg: 0x" << Control.getMemToReg() << "\n";
+        MyFile << "Value of ALUOp: 0x" << Control.getALUOp() << "\n";
+        MyFile << "Value of MemRead: 0x" << Control.getmemRead() << "\n";
+        MyFile << "\n" << "\n";
+
+
+        //print input to Shift left two
+        MyFile << "The input to shift left two: 0x" << stoi(CurrentShift,0,2) << "\n";
+        //Print output of shift left two
+        MyFile << "The output of shift left two: 0x" << stoi(Shifted, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+
+        //print input to multiplexor 1 (between instruction memory and registers)
+        MyFile << "Input to multiplexor 1: " << "\n";
+        MyFile << "The current RT: 0x" << stoi(CurrentRT, 0, 2) << "\n";
+        MyFile << "The current RD: 0x" << stoi(CurrentRD, 0, 2) << "\n";
+        MyFile << "Value of RegDst: 0x" << Control.getRegDst() << "\n";
+        
+        //print output of multiplexor one
+        MyFile << "Output of Multiplexor one: " << "\n";
+        MyFile << "Value to be used as write register: 0x" << stoi(MUXOneData, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+        //print input to sign extend
+        MyFile << "Input to sign extend: " << "\n";
+        MyFile << "The Current Offset: 0x" << stoi(CurrentOffset, 0, 2) << "\n";
+        //print output of sign extend
+        MyFile << "Output of sign extend: " << "\n";
+        MyFile << "Extended: 0x" << stoi(Extended, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+
+        //print input to register file
+        //need to also implement actually writing to the registers somewhere here ***
+        
+        MyFile << "Input to Register File: " << "\n";
+        MyFile << "The current RS: 0x" << stoi(CurrentRS, 0, 2) << "\n";
+        MyFile << "The Current RT: 0x" << stoi(CurrentRT, 0, 2) << "\n";
+        MyFile << "Output of Multiplexor one: 0x" << stoi(MUXOneData, 0, 2) << "\n";
+        MyFile << "RegWrite value: 0x" << Control.getRegWrite();
+        MyFile << "\n" << "\n";
+
+        //print output of register file
+        
+        MyFile << "Output of Register file: " << "\n";
+        MyFile << "Read Data One: 0x" << ReadDataOne << "\n";
+        MyFile << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        MyFile << "\n" << "\n";
+
+
+
+        //print input to to multiplexor two (in between registers and alu)
+        
+        MyFile << "The input to multiplexor two: " << "\n";
+        MyFile << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        MyFile << "The ALU Src: 0x" << Control.getaluSrc() << "\n";
+        //print output of multiplexor two
+        MyFile << "Output of Multiplexor two: " << "\n";
+        MyFile << "Value to be used in ALU: 0x" << MUXTwoData << "\n";
+        MyFile << "\n" << "\n";
+
+        //print input to ALU control
+        MyFile << "Input to ALU control: " << "\n";
+        MyFile << "ALU Op value from control: 0x" << Control.getALUOp() << "\n";
+        MyFile << "Funct field from Instruction memory: 0x" << CurrentFunct << "\n";
+        
+        //print output of ALU control
+        MyFile << "Output of ALU control: " << "\n";
+        MyFile << "The operation to be performed: 0x" << stoi(Operation, 0, 2);
+        MyFile << "\n" << "\n";
+
+
+        //print input to ALU one
+        MyFile << "Input to ALU One: " << "\n";
+        MyFile << "Read data one: 0x" << ReadDataOne << "\n";
+        MyFile << "Output of multiplexor two: 0x" << MUXTwoData << "\n";
+        MyFile << "Operation from ALU control: 0x" << stoi(Operation, 0, 2) << "\n";
+        
+        //print output of ALU one
+        MyFile << "Output of ALUOne: " << "\n";
+        MyFile << "ALU One Result: 0x" << ALUOneResult << "\n";
+        MyFile << "\n" << "\n";
+
+
+        //print input to data memory
+        MyFile << "Input to data memory: " << "\n";
+        MyFile << "ALU Result: 0x" << ALUOneResult << "\n";
+        MyFile << "Write Data: 0x" << ReadDataTwo << "\n";
+        MyFile << "Value of MemWrite: 0x" << Control.getmemWrite() << "\n";
+        MyFile << "Value of MemRead: 0x"  << Control.getmemRead() << "\n";
+        
+        //print output from data memory
+        
+        MyFile << "Output of data memory: " << "\n";
+        MyFile << "Read data: 0x" << DMOutput << "\n";
+        MyFile << "\n" << "\n";
+
+
+
+        //print input to multiplexor three (after data memory on far righ of diagram)
+        MyFile << "Input to multiplexor three: " << "\n";
+        MyFile << "Output of ALU one: 0x" << ALUOneResult << "\n";
+        MyFile << "Read data from data memory: 0x" << DMOutput << "\n";
+        MyFile << "Value of MemToReg: 0x" << Control.getMemToReg() << "\n";
+        
+        //print output of multiplexor three
+        MyFile << "Output of Multiplexor three: " << "\n";
+        MyFile << "Value to be used in Register File: 0x" << MUXThreeData << "\n";
+        MyFile << "\n" << "\n";
+
+        //print input to register file (write data)
+        //this is where an actual write will happen so print the write input
+        MyFile << "Input to register file part two: " << "\n";
+        MyFile << "Write data from multiplexor three: 0x" << MUXThreeData << "\n";
+        
+        MyFile << "\n" << "\n";
+
+
+        // print input to second shift left two
+        MyFile << "Input to second shift left two: " << "\n";
+        MyFile << "Sign extended value: 0x" << stoi(Extended, 0, 2) << "\n";
+        
+        //print output of second shift left two
+        MyFile << "Output of second shift left two: " << "\n";
+        MyFile << "Sign extended value shifted left by two: 0x" << stoi(ShiftedTwo, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+        //print input to first adder (top left of diagram)
+        MyFile << "Input to the first adder: " << "\n";
+        MyFile << "Address from pc: 0x" << CurrentAddress << "\n";
+        MyFile << "Four: 0x4" << "\n";
+        //print output of firmst adder (top left of diagram)
+
+        
+        MyFile << "Output of first adder: " << "\n";
+        MyFile << "PC address plus four: 0x" << stoi(AdderOneResult, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+        //this adder says the numbers are too large to add
+        //print input to second adder (alu result in top right)
+        MyFile << "Input to second adder: " << "\n";
+        MyFile << "PC address plus four: 0x" << stoi(AdderOneResult, 0, 2) << "\n";
+        MyFile << "Shifted two: 0x" << stoi(ShiftedTwo, 0, 2) << "\n";
+        //print output of second adder
+        MyFile << "Output of second adder: " << "\n";
+        MyFile << "PC address plus jump: 0x" << stoi(AdderTwoResult, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+        //print input to multiplexor four (after alu result adder in top right of diagram)
+        
+        MyFile << "Input to multiplexor four: " << "\n";
+        MyFile << "Output of Adder one: 0x" << stoi(AdderOneResult, 0, 2) << "\n";
+        MyFile << "Output of Adder two: 0x" << stoi(AdderTwoResult, 0, 2) << "\n";
+        MyFile << "Value of branch or zero: 0x" << MUXFourControl << "\n";
+        
+        //print output of multiplexor four
+        MyFile << "Output of Multiplexor four: " << "\n";
+        MyFile << "Value to be used in Multiplexor five: 0x" << stoi(MUXFourData, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+
+
+        //print input to multiplexor five (top right of diagram)
+        MyFile << "Input to multiplexor five: " << "\n";
+        MyFile << "Output of shift left one: 0x" << stoi(ShiftedTwo, 0, 2) << "\n";
+        MyFile << "Output of Multiplexor four: 0x" << stoi(MUXFourData, 0, 2) << "\n";
+        MyFile << "Value of jump: 0x" << Control.getJump() << "\n";
+       
+        //print output of multiplexor five
+        MyFile << "Output of Multiplexor five: " << "\n";
+        MyFile << "Value to be used in Program Counter: 0x" << stoi(MUXFiveData, 0, 2) << "\n";
+        MyFile << "\n" << "\n";
+
+        //print input to pc
+        MyFile << "Input to PC: " << "\n";
+        MyFile << "Output of multiplexor 5: 0x" << stoi(MUXFiveData,0,2) << "\n";
+      
+      }
+      //print to command line
+      else{
+        cout << setbase(16);
+        cout << "The Current Instruction: " << CurrentInstruction << "\n";
+        cout << "Output of Program Counter: 0x" <<  CurrentAddress << "\n";
+
+        
+        cout << "\n" << "\n";
+
+        //print the input to IM
+        cout << "Input to IM: the current address: 0x" << CurrentAddress << "\n";
+  
+        cout << "\n";
+        //print the output of IM
+        cout << "Output of IM: the current RS: 0x" << stoi(CurrentRS,0,2) << "\n";
+        cout << "Output of IM: the current RS: 0x" << stoi(CurrentRS, 0,2) << "\n";
+        cout << "Output of IM: the current RT: 0x" << stoi(CurrentRT,0,2) << "\n";
+        cout << "Output of IM: the current RD: 0x" << stoi(CurrentRD,0,2) << "\n";
+        cout << "Output of IM: the current Offset: 0x" << stoi(CurrentOffset,0,2) << "\n";
+        cout << "Output of IM: the current opcode: 0x" << stoi(CurrentOpCode,0,2) << "\n";
+        cout << "\n" << endl;
+
+
+        //output all of the control lines (ie the input to control)
+        cout << "The input to control: the control lines: " << "\n";
+        cout << "Value of RegWrite: 0x" << Control.getRegWrite() << "\n";
+        cout << "Value of MemWrite: 0x" << Control.getmemWrite() << "\n";
+        cout << "Value of ALUSrc: 0x" << Control.getaluSrc() << "\n";
+        cout << "Value of RegDst: 0x" << Control.getRegDst() << "\n";
+        cout << "Value of Jump: 0x" << Control.getJump() << "\n";
+        cout << "Value of MemtoReg: 0x" << Control.getMemToReg() << "\n";
+        cout << "Value of ALUOp: 0x" << Control.getALUOp() << "\n";
+        cout << "Value of MemRead: 0x" << Control.getmemRead() << "\n";
+        cout << "\n" << "\n";
+
+
+        //print input to Shift left two
+        cout << "The input to shift left two: 0x" << stoi(CurrentShift,0,2) << "\n";
+        //Print output of shift left two
+        cout << "The output of shift left two: 0x" << stoi(Shifted, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+
+        //print input to multiplexor 1 (between instruction memory and registers)
+        cout << "Input to multiplexor 1: " << "\n";
+        cout << "The current RT: 0x" << stoi(CurrentRT, 0, 2) << "\n";
+        cout << "The current RD: 0x" << stoi(CurrentRD, 0, 2) << "\n";
+        cout << "Value of RegDst: 0x" << Control.getRegDst() << "\n";
+        
+        //print output of multiplexor one
+        cout << "Output of Multiplexor one: " << "\n";
+        cout << "Value to be used as write register: 0x" << stoi(MUXOneData, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+        //print input to sign extend
+        cout << "Input to sign extend: " << "\n";
+        cout << "The Current Offset: 0x" << stoi(CurrentOffset, 0, 2) << "\n";
+        //print output of sign extend
+        cout << "Output of sign extend: " << "\n";
+        cout << "Extended: 0x" << stoi(Extended, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+
+        //print input to register file
+        //need to also implement actually writing to the registers somewhere here ***
+        
+        cout << "Input to Register File: " << "\n";
+        cout << "The current RS: 0x" << stoi(CurrentRS, 0, 2) << "\n";
+        cout << "The Current RT: 0x" << stoi(CurrentRT, 0, 2) << "\n";
+        cout << "Output of Multiplexor one: 0x" << stoi(MUXOneData, 0, 2) << "\n";
+        cout << "RegWrite value: 0x" << Control.getRegWrite();
+        cout << "\n" << "\n";
+
+        //print output of register file
+        
+        cout << "Output of Register file: " << "\n";
+        cout << "Read Data One: 0x" << ReadDataOne << "\n";
+        cout << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        cout << "\n" << "\n";
+
+
+
+        //print input to to multiplexor two (in between registers and alu)
+        
+        cout << "The input to multiplexor two: " << "\n";
+        cout << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        cout << "The ALU Src: 0x" << Control.getaluSrc() << "\n";
+        //print output of multiplexor two
+        cout << "Output of Multiplexor two: " << "\n";
+        cout << "Value to be used in ALU: 0x" << MUXTwoData << "\n";
+        cout << "\n" << "\n";
+
+        //print input to ALU control
+        cout << "Input to ALU control: " << "\n";
+        cout << "ALU Op value from control: 0x" << Control.getALUOp() << "\n";
+        cout << "Funct field from Instruction memory: 0x" << CurrentFunct << "\n";
+        
+        //print output of ALU control
+        cout << "Output of ALU control: " << "\n";
+        cout << "The operation to be performed: 0x" << stoi(Operation, 0, 2);
+        cout << "\n" << "\n";
+
+
+        //print input to ALU one
+        cout << "Input to ALU One: " << "\n";
+        cout << "Read data one: 0x" << ReadDataOne << "\n";
+        cout << "Output of multiplexor two: 0x" << MUXTwoData << "\n";
+        cout << "Operation from ALU control: 0x" << stoi(Operation, 0, 2) << "\n";
+        
+        //print output of ALU one
+        cout << "Output of ALUOne: " << "\n";
+        cout << "ALU One Result: 0x" << ALUOneResult << "\n";
+        cout << "\n" << "\n";
+
+
+        //print input to data memory
+        cout << "Input to data memory: " << "\n";
+        cout << "ALU Result: 0x" << ALUOneResult << "\n";
+        cout << "Write Data: 0x" << ReadDataTwo << "\n";
+        cout << "Value of MemWrite: 0x" << Control.getmemWrite() << "\n";
+        cout << "Value of MemRead: 0x"  << Control.getmemRead() << "\n";
+        
+        //print output from data memory
+        
+        cout << "Output of data memory: " << "\n";
+        cout << "Read data: 0x" << DMOutput << "\n";
+        cout << "\n" << "\n";
+
+
+
+        //print input to multiplexor three (after data memory on far righ of diagram)
+        cout << "Input to multiplexor three: " << "\n";
+        cout << "Output of ALU one: 0x" << ALUOneResult << "\n";
+        cout << "Read data from data memory: 0x" << DMOutput << "\n";
+        cout << "Value of MemToReg: 0x" << Control.getMemToReg() << "\n";
+        
+        //print output of multiplexor three
+        cout << "Output of Multiplexor three: " << "\n";
+        cout << "Value to be used in Register File: 0x" << MUXThreeData << "\n";
+        cout << "\n" << "\n";
+
+        //print input to register file (write data)
+        //this is where an actual write will happen so print the write input
+        cout << "Input to register file part two: " << "\n";
+        cout << "Write data from multiplexor three: 0x" << MUXThreeData << "\n";
+        
+        cout << "\n" << "\n";
+
+
+        // print input to second shift left two
+        cout << "Input to second shift left two: " << "\n";
+        cout << "Sign extended value: 0x" << stoi(Extended, 0, 2) << "\n";
+        
+        //print output of second shift left two
+        cout << "Output of second shift left two: " << "\n";
+        cout << "Sign extended value shifted left by two: 0x" << stoi(ShiftedTwo, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+        //print input to first adder (top left of diagram)
+        cout << "Input to the first adder: " << "\n";
+        cout << "Address from pc: 0x" << CurrentAddress << "\n";
+        cout << "Four: 0x4" << "\n";
+        //print output of firmst adder (top left of diagram)
+
+        
+        cout << "Output of first adder: " << "\n";
+        cout << "PC address plus four: 0x" << stoi(AdderOneResult, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+        //this adder says the numbers are too large to add
+        //print input to second adder (alu result in top right)
+        cout << "Input to second adder: " << "\n";
+        cout << "PC address plus four: 0x" << stoi(AdderOneResult, 0, 2) << "\n";
+        cout << "Shifted two: 0x" << stoi(ShiftedTwo, 0, 2) << "\n";
+        //print output of second adder
+        cout << "Output of second adder: " << "\n";
+        cout << "PC address plus jump: 0x" << stoi(AdderTwoResult, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+        //print input to multiplexor four (after alu result adder in top right of diagram)
+        
+        cout << "Input to multiplexor four: " << "\n";
+        cout << "Output of Adder one: 0x" << stoi(AdderOneResult, 0, 2) << "\n";
+        cout << "Output of Adder two: 0x" << stoi(AdderTwoResult, 0, 2) << "\n";
+        cout << "Value of branch or zero: 0x" << MUXFourControl << "\n";
+        
+        //print output of multiplexor four
+        cout << "Output of Multiplexor four: " << "\n";
+        cout << "Value to be used in Multiplexor five: 0x" << stoi(MUXFourData, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+
+
+        //print input to multiplexor five (top right of diagram)
+        cout << "Input to multiplexor five: " << "\n";
+        cout << "Output of shift left one: 0x" << stoi(ShiftedTwo, 0, 2) << "\n";
+        cout << "Output of Multiplexor four: 0x" << stoi(MUXFourData, 0, 2) << "\n";
+        cout << "Value of jump: 0x" << Control.getJump() << "\n";
+       
+        //print output of multiplexor five
+        cout << "Output of Multiplexor five: " << "\n";
+        cout << "Value to be used in Program Counter: 0x" << stoi(MUXFiveData, 0, 2) << "\n";
+        cout << "\n" << "\n";
+
+        //print input to pc
+        cout << "Input to PC: " << "\n";
+        cout << "Output of multiplexor 5: 0x" << stoi(MUXFiveData,0,2) << "\n";
+      
+      }
+      CurrentAddress = PC.getAddress();
+
+    
+
+  }
+  if(print_memory_contents){
+    for(const auto & [key, value] : RF.getRegisters()){
+      if(w){
+        MyFile << setbase(10);
+        MyFile << key << ":" << value << "\n";
+      }
+      else{
+        cout << setbase(10);
+        cout << key << ":" << value << "\n";
+      }
+    }
+    for(const auto & [key, value] : DM.getMemory()){
+      if(w){
+        MyFile << setbase(10);
+        MyFile << key << ":" << value << "\n";
+      }
+      else{
+        cout << setbase(10);
+        cout << key << ":" << value << endl;
+      }
+    }
   }
 
   MyFile.close();
@@ -337,6 +623,15 @@ int main(int argc, char *argv[])
   string debug = config["debug_mode"];
   string output_file = config["output_file"];
   string write = config["write_to_file"];
+  string print = config["print_memory_contents"];
+
+  bool print_memory_contents;
+  if(print == "false"){
+    print_memory_contents = false;
+  }
+  else{
+    print_memory_contents = true;
+  }
 
   bool debug_mode;
   if(debug == "false")
@@ -390,15 +685,13 @@ int main(int argc, char *argv[])
   {
     int equals = s2.find(":");
     if(equals > 0)
-    {
+    { 
       int key = std::stoi(s2.substr(0, equals));
       string value = s2.substr(equals+1);
       registerMemory[key] = value;
-      //std::cout << key << std::endl;
     }
   }
   Register.close();
-
   unordered_map<int, string> Registers;
   for(int i = 0; i < registerMemory.size(); i++)
   {
@@ -406,10 +699,9 @@ int main(int argc, char *argv[])
     Registers[i] = dataMemory[registerMemory[i]];
   }
 
-  RegisterFile RF = RegisterFile(Registers);
+  RegisterFile RF = RegisterFile(registerMemory);
 
 /////////////////////////////////////////////////////////////////////
-
   ASMParser *parser;
   parser = new ASMParser(program_input);
 
@@ -421,26 +713,36 @@ int main(int argc, char *argv[])
 
   Instruction i;
   unordered_map<int, string> instructions; // list of Instructions
-  //Iterate through instructions, printing each encoding.
-  int myLabelAddress = stoi("0x400000", 0, 16);
-  i = parser->getNextInstruction();
-  while( i.getOpcode() != UNDEFINED)
+  unordered_map<int, string> machineInstructions; //instructions listed in machine code
+  fstream MI;
+  MI.open(program_input, ios::in);
+  string inst;
+  int myLabelAddress = 0x400000;
+  while(getline(MI,inst))
   {
+    machineInstructions[myLabelAddress] = inst;
+    myLabelAddress += 4;
+  }
+  Register.close();
+  //Iterate through instructions, printing each encoding.
+  myLabelAddress = 0x400000;
+  i = parser->getNextInstruction();
+  while( i.getOpcode() != UNDEFINED){
     // cout << i.getString() << endl;
     instructions[myLabelAddress] = i.getEncoding();
-    std::cout << myLabelAddress << endl;
-    std::cout << i.getEncoding() << endl;
     i = parser->getNextInstruction();
     myLabelAddress += 4;
   }
 
   delete parser;
   InstructionMemory IM = InstructionMemory(instructions);
-  ProgramCounter PC;
+
+  ProgramCounter PC; //Needs symbol table to save the address of instructions
 
   Control Control;
 
-  process(DM, IM, PC, RF, Control);
+  process(DM, IM, PC, RF, Control, write_to_file, output_file, machineInstructions, print_memory_contents, output_mode);
   return 0;
+
 
 }
