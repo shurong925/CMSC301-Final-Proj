@@ -269,7 +269,7 @@ bool ASMParser::getOperands(Instruction &i, Opcode o,
         }
         else{
           //if the jump is given as a hex value rather than a label
-          imm = stoi(*operand, 0, 16);
+          imm = stoi(operand[imm_p], 0, 16);
         }
 	       
 	       myLabelAddress += 4;  // increment the label generator
@@ -351,6 +351,18 @@ string ASMParser::encode(Instruction i)
       imm = "00" + imm.substr(0, imm.length()-2);
       encoding.append(imm);
 
+      break;
+
+    case BTYPE:
+      rs = (bitset<5>(i.getRS())).to_string();
+      encoding.append(rs); 
+
+      rt = (bitset<5>(i.getRT())).to_string();
+      encoding.append(rt);
+      imm = (bitset<16>(i.getImmediate())).to_string();
+      //shift right 2
+      imm = "00" + imm.substr(0, imm.length()-2);
+      encoding.append(imm);
       break;
 }
 
