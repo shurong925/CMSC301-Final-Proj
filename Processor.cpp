@@ -21,6 +21,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 {
   //put a loop here that does the following for every instruction in IM
   int CurrentAddress = PC.getAddress();
+  cout << CurrentAddress << endl;
   //initialize the other objects that we need
   ShiftLeft SLOne = ShiftLeft();
   ShiftLeft SLTwo = ShiftLeft();
@@ -227,30 +228,29 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     cout << "\n" << endl;
 
 
-
+    //This adder is causing errors
     //print input to first adder (top left of diagram)
     cout << "Input to the first adder: " << endl;
     cout << "Address from pc: " << CurrentAddress << endl;
     cout << "Four: 4" << endl;
     //print output of firmst adder (top left of diagram)
-    string BinaryAddress = to_string(CurrentAddress);
-    int binAddress = stoi(BinaryAddress, 0, 2);
-    AdderOne.setReadDataOne(to_string(binAddress));
-    AdderOne.setReadDataTwo("0100");
-    string AdderOneResult = AdderOne.getResult();
+    
+    AdderOne.setReadDataOne(to_string(CurrentAddress));
+    AdderOne.setReadDataTwo("0x4");
+    string AdderOneResult = AdderOne.adder();
     cout << "Output of first adder: " << endl;
     cout << "PC address plus four: " << AdderOneResult << endl;
     cout << "\n" << endl;
 
 
-
+    //this adder says the numbers are too large to add
     //print input to second adder (alu result in top right)
     cout << "Input to second adder: " << endl;
     cout << "PC address plus four: " << AdderOneResult << endl;
     cout << "Shifted two: " << ShiftedTwo << endl;
     AdderTwo.setReadDataOne(AdderOneResult);
     AdderTwo.setReadDataTwo(ShiftedTwo);
-    string AdderTwoResult = AdderTwo.getResult();
+    string AdderTwoResult = AdderTwo.adder();
     //print output of second adder
     cout << "Output of second adder: " << endl;
     cout << "PC address plus jump: " << AdderTwoResult << endl;
@@ -259,7 +259,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
     //print input to multiplexor four (after alu result adder in top right of diagram)
     bool MUXFourControl;
-    if(Control.getJump() or ALUOne.getOutput()){
+    if(Control.getBranch() or ALUOne.getOutput()){
       MUXFourControl = true;
     }
     else{
