@@ -24,6 +24,7 @@ class DataMemory
     void setMemWrite(bool mw);
     void setMemRead(bool mr);
     void writeTheData();
+    unordered_map<string, string> getMemory();
 
 };
 
