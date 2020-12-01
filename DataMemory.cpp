@@ -40,4 +40,7 @@ void DataMemory::writeTheData(){
 		Memory[address] = writeData;
 	}
 }
+unordered_map<string, string> DataMemory::getMemory(){
+	return Memory;
+}
 
