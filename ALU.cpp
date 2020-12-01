@@ -29,9 +29,14 @@ void ALU::setReadDataOne(string One)
 }
 
 //Set the number of first register to read
-void ALU::setReadDataTwo(string Two)
+void ALU::setReadDataTwo(string Two, bool hex)
 {
-  readDataTwo = Two;
+  if(hex){
+    readDataTwo = stoll(Two, 0, 16);
+  }
+  else{
+    readDataTwo = stoll(Two, 0, 2);
+  }
 }
 
 //Get the number of register to be written to
@@ -55,16 +60,16 @@ string ALU::getResult()
 {
   //string op;
   if(op == "0010"){
-    result = bitset<32>((stoi(readDataOne, 0, 2) + stoi(readDataTwo, 0, 2))).to_string();
+    result = bitset<32>((stoll(readDataOne, 0, 16) + readDataTwo)).to_string();
     return result;
   }
   else if(op == "0110"){
-    result = bitset<32>((stoi(readDataOne, 0, 2) - stoi(readDataTwo, 0, 2))).to_string();
+    result = bitset<32>((stoll(readDataOne, 0, 16) - readDataTwo)).to_string();
     return result;
   }
   else if(op == "0111"){
-    if(stoi(readDataOne, 0, 2) > stoi(readDataTwo, 0, 2))
-          result = readDataTwo;
+    if(stoll(readDataOne, 0, 16) > readDataTwo)
+          result = to_string(readDataTwo);
      else
           result = readDataOne;
      return result;
@@ -76,10 +81,12 @@ string ALU::getResult()
 //Find out the output of whether it's 0 or 1
 bool ALU::getOutput()
 {
-  if(stoi(result) == 0){
+  if(stoll(result, 0, 2) == 0){
     zero = true;
   }
-  zero = false;
+  else{
+    zero = false;
+  }
   return zero;
 }
 
