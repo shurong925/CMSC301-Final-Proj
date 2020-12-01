@@ -10,5 +10,5 @@ int ProgramCounter::getAddress()
     return address;
 }
 void ProgramCounter::setAddress(string add){
-	address = stoi(add, 0, 16);
+	address = stoi(add, 0, 2);
 }
