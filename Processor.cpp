@@ -19,9 +19,7 @@ using namespace std;
 
 void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control)
 {
-  //put a loop here that does the following for every instruction in IM
   int CurrentAddress = PC.getAddress();
-  cout << CurrentAddress << endl;
   //initialize the other objects that we need
   ShiftLeft SLOne = ShiftLeft();
   ShiftLeft SLTwo = ShiftLeft();
@@ -39,7 +37,6 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   AdderTwo.setOperation("0010");
 
   while(IM.getMap().find(CurrentAddress) != IM.getMap().end()){
-    //int CurrentAddress = PC.getAddress(); this is commented out for now to avoid infinite loop
     //print output of PC
     cout << "Output of Program Counter: " <<  CurrentAddress << endl;
     IM.getAddress(CurrentAddress);
@@ -228,7 +225,6 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     cout << "\n" << endl;
 
 
-    //This adder is causing errors
     //print input to first adder (top left of diagram)
     cout << "Input to the first adder: " << endl;
     cout << "Address from pc: " << CurrentAddress << endl;
@@ -236,8 +232,8 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     //print output of firmst adder (top left of diagram)
     
     AdderOne.setReadDataOne(to_string(CurrentAddress));
-    AdderOne.setReadDataTwo("0x4");
-    string AdderOneResult = AdderOne.adder();
+    AdderOne.setReadDataTwo("4");
+    string AdderOneResult = AdderOne.adder(CurrentAddress, 4);
     cout << "Output of first adder: " << endl;
     cout << "PC address plus four: " << AdderOneResult << endl;
     cout << "\n" << endl;
@@ -248,9 +244,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     cout << "Input to second adder: " << endl;
     cout << "PC address plus four: " << AdderOneResult << endl;
     cout << "Shifted two: " << ShiftedTwo << endl;
-    AdderTwo.setReadDataOne(AdderOneResult);
-    AdderTwo.setReadDataTwo(ShiftedTwo);
-    string AdderTwoResult = AdderTwo.adder();
+    string AdderTwoResult = AdderTwo.adder(stoi(AdderOneResult, 0, 2), stoi(ShiftedTwo, 0, 2));
     //print output of second adder
     cout << "Output of second adder: " << endl;
     cout << "PC address plus jump: " << AdderTwoResult << endl;
@@ -289,13 +283,15 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     //print output of multiplexor five
     cout << "Output of Multiplexor five: " << endl;
     string MUXFiveData = MUXFive.getData();
-    cout << "Value to be used in Program Counter five: " << MUXFiveData << endl;
+    cout << "Value to be used in Program Counter: " << MUXFiveData << endl;
     cout << "\n" << endl;
 
     //print input to pc
     cout << "Input to PC: " << endl;
     cout << "Output of multiplexor 5: " << MUXFiveData << endl;
     PC.setAddress(MUXFiveData);
+    CurrentAddress = PC.getAddress(); 
+
   }
   
   //
