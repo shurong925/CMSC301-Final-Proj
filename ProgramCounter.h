@@ -11,6 +11,7 @@ class ProgramCounter
  public:
     ProgramCounter();
     int getAddress();
+    void setAddress(string add);
 };
 
 #endif
