@@ -27,7 +27,7 @@ class Control
    bool regDst; //Given to input multiplexor for register file. If true, register read by register file will be in rd field, if false it comes from rt field
    bool jump; //If true, pc will change to the value of adder that computes branch/jump target, if false pc will increment by 4
    bool memtoReg; //If true, value fed to register file from data memory will be result computed by alu, if false, it will be the value grabbed from data memory Given to multiplexor that is output of data memory and input to register file
-
+   bool branch;
 
  public:
    Control(); //constructor
@@ -42,6 +42,7 @@ class Control
    bool getJump();
    bool getMemToReg();
    string getALUOp();
+   bool getBranch();
    //All of above get methods return the boolean/string value contained in data field
 
 
