@@ -38,10 +38,10 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
   ALU AdderTwo = ALU();
   AdderTwo.setOperation("0010");
 
-  while(IM.getMap().find(CurrentAddress) != IM.getMap().end()){
+  while(IM.getMap().find(CurrentAddress) != IM.getMap().end())
+  {
     //print output of PC
     MyFile << "Output of Program Counter: " <<  CurrentAddress << "\n";
-    MyFile << "Output of Program Counter: " << CurrentAddress << "\n";
 
     IM.getAddress(CurrentAddress);
     string CurrentRS = IM.getRS();
@@ -90,8 +90,6 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     MyFile << "The output of shift left two: " << Shifted << "\n";
     MyFile << "\n" << "\n";
 
-
-
     //print input to multiplexor 1 (between instruction memory and registers)
     MyFile << "Input to multiplexor 1: " << "\n";
     MyFile << "The current RT: " << CurrentRT << "\n";
@@ -115,7 +113,6 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     MyFile << "Output of sign extend: " << "\n";
     MyFile << "Extended: " << Extended << "\n";
     MyFile << "\n" << "\n";
-
 
 
     //print input to register file
@@ -302,56 +299,6 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
   }
 
-  //
-  // bool controlInput1;
-  // //if(CurrentRD == NULL)
-  //   //controlInput1 = false;
-  // //else
-  //   //controlInput1 = true;
-  //
-  // Multiplexor Mul1 = Multiplexor(controlInput1);
-  // Mul1.setInput(controlInput1);
-  // Mul1.getData(); //Not sure how you initialize Data 1 and Data 2
-  //
-  // RF.setFirstRegister(CurrentRS);
-  // RF.setSecondRegister(CurrentRD);
-  // RF.writeInstructionOrNot(controlInput1);
-  //
-  // //if(RF.writeCondition() == true)
-  // //{
-  //  // RF.setWriteRegister(CurrentRD);
-  // //}
-  //
-  // string firstRegister = RF.getFirstRegister();
-  // string secondRegister = RF.getSecRegister();
-  // string writeRegister = RF.getWriteRegister();
-  //
-  // string firstValue = RF.getValue(firstRegister);
-  // string secondValue = RF.getValue(secondRegister);
-  //
-  // SignExtend SE = SignExtend(CurrentOffset);
-  // string Extended = SE.getExtended();
-  //
-  // bool controlInput2 = false;
-  // Multiplexor Mul2 = Multiplexor(controlInput1);
-  // Mul1.setInput(controlInput1);
-  // Mul1.getData(); //Still not sure how to use multiplexor
-  //
-  // string Opcode = Control.getALUOp();
-  //
-  // //ALUControl ALUControl();
-  // //ALUControl.setOp(OpCode);
-  // //string ALUOP = ALUControl.getOp();
-  //
-  // //ALU ALUone();
-  // //ALUone.setReadDataOne(firstValue);
-  // //ALUone.setReadDataTwo(); //This should be the value passed from multiplexor
-  // //string Result = ALUone.getResult();
-  // //string ZERO = ALUone.getOutput();
-  //
-  //
-  //
-
   MyFile.close();
 }
 
@@ -475,24 +422,25 @@ int main(int argc, char *argv[])
   Instruction i;
   unordered_map<int, string> instructions; // list of Instructions
   //Iterate through instructions, printing each encoding.
-  int myLabelAddress = 0x400000;
+  int myLabelAddress = stoi("0x400000", 0, 16);
   i = parser->getNextInstruction();
-  while( i.getOpcode() != UNDEFINED){
+  while( i.getOpcode() != UNDEFINED)
+  {
     // cout << i.getString() << endl;
     instructions[myLabelAddress] = i.getEncoding();
+    std::cout << myLabelAddress << endl;
+    std::cout << i.getEncoding() << endl;
     i = parser->getNextInstruction();
     myLabelAddress += 4;
   }
 
   delete parser;
   InstructionMemory IM = InstructionMemory(instructions);
-
-  ProgramCounter PC; //Needs symbol table to save the address of instructions
+  ProgramCounter PC;
 
   Control Control;
 
   process(DM, IM, PC, RF, Control);
   return 0;
-
 
 }
