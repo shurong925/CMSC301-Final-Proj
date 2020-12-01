@@ -45,8 +45,8 @@ string ALU::getOperation()
   return op;
 }
 
-string ALU::adder(){
-    result = bitset<32>((stoll(readDataOne, 0, 16) + stoll(readDataTwo, 0, 16))).to_string();
+string ALU::adder(int one, int two){
+    result = bitset<32>(one + two).to_string();
     return result;
 }
 
