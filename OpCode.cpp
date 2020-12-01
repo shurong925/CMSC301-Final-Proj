@@ -34,7 +34,6 @@ int OpcodeTable::numOperands(Opcode o)
   return myArray[o].numOps;
 }
 
-
 int OpcodeTable::RSposition(Opcode o)
 // Given an Opcode, returns the position of RS field.  If field is not
 // appropriate for this Opcode, returns -1.
