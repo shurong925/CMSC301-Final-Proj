@@ -80,6 +80,7 @@ void Control::setValues(string opCode)
 		ALUop = "01";
 		branch = true;
 	}
+	//addi
 	else if(opField == "001000"){
 		regDst = true;
 		aluSrc = true;
@@ -88,7 +89,7 @@ void Control::setValues(string opCode)
 		memRead = false;
 		memWrite = false;
 		jump = false;
-		ALUop = "10";
+		ALUop = "01";
 		branch = false;
 	}
 	else{
