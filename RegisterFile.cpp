@@ -64,7 +64,7 @@ Write to the write register with data
 void RegisterFile::write()
 {
   if(regWrite){
-    Registers[stoi(writeRegister, 0, 2)] = writeValue;
+    Registers[stoi(writeRegister, 0, 16)] = writeValue;
   }
 }
 
@@ -90,4 +90,8 @@ string RegisterFile::getValue(string index)
 
 void RegisterFile::setWriteValue(string data){
   writeValue = data;
+}
+
+unordered_map<int, string> RegisterFile::getRegisters(){
+  return Registers;
 }
