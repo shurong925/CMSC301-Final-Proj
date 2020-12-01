@@ -10,17 +10,16 @@ OpcodeTable::OpcodeTable()
 
     myArray[SUB].name = "sub"; myArray[SUB].numOps = 3;  myArray[SUB].rsPos = 0; myArray[SUB].rdPos = 0;  myArray[SUB].rsPos = 1;  myArray[SUB].rtPos = 2; myArray[SUB].instType = RTYPE; myArray[SUB].op_field = "000000"; myArray[SUB].funct_field = "100010";
 
-    myArray[J].name = "j";  myArray[J].numOps = 1;  myArray[J].immPos = 0;  myArray[J].instType = JTYPE; myArray[J].op_field = "000010"; myArray[J].immLabel = true;
+    myArray[J].name = "j"; myArray[J].numOps = 1;  myArray[J].rdPos = -1;  myArray[J].rsPos = -1;  myArray[J].rtPos = -1;  myArray[J].immPos = 0; myArray[J].instType = JTYPE; myArray[J].op_field = "000010"; myArray[J].immLabel = true;
 
     myArray[SLT].name = "slt"; myArray[SLT].numOps = 3;  myArray[SLT].rdPos = 0;  myArray[SLT].rsPos = 1;  myArray[SLT].rtPos = 2;  myArray[SLT].immPos = -1;  myArray[SLT].instType = RTYPE; myArray[SLT].op_field = "000000";   myArray[SLT].funct_field = "101010";
 
     myArray[BEQ].name = "beq"; myArray[BEQ].numOps = 3;  myArray[BEQ].rtPos = 0; myArray[BEQ].rsPos = 1; myArray[BEQ].immPos = 2; myArray[BEQ].instType = ITYPE; myArray[BEQ].op_field = "000100";
 
-    myArray[LW].name = "lw"; myArray[LW].numOps = 3;  myArray[LW].rtPos = 0; myArray[LW].rsPos = 1; myArray[LW].immPos = 2;  myArray[LW].instType = ITYPE; myArray[LW].op_field = "000000";
+    myArray[LW].name = "lw"; myArray[LW].numOps = 3;  myArray[LW].rdPos = -1;  myArray[LW].rsPos = 2;  myArray[LW].rtPos = 0;  myArray[LW].instType = ITYPE; myArray[LW].op_field = "000000";
 
-    myArray[SW].name = "sw"; myArray[SW].numOps = 3;  myArray[SW].rtPos = 0; myArray[SW].rsPos = 1; myArray[SW].immPos = 2;;  myArray[SW].instType = ITYPE; myArray[SW].op_field = "101011";
+    myArray[SW].name = "sw"; myArray[SW].numOps = 3;  myArray[SW].rdPos = -1;  myArray[SW].rsPos = 2;  myArray[SW].rtPos = 0;  myArray[SW].instType = ITYPE; myArray[SW].op_field = "101011";
 
-}
 
 Opcode OpcodeTable::getOpcode(string str)
 // Given a valid MIPS assembly mnemonic, returns an Opcode which represents a
