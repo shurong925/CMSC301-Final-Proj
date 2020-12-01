@@ -20,6 +20,7 @@ bool Control::getRegDst(){return regDst;}
 bool Control::getJump(){return jump; }
 bool Control::getMemToReg(){return memtoReg;}
 string Control::getALUOp(){return ALUop;}
+bool Control::getBranch(){return branch;}
 
 void Control::setValues(string opCode)
 {
@@ -35,6 +36,7 @@ void Control::setValues(string opCode)
 		memWrite = false;
 		jump = false;
 		ALUop = "10";
+		branch = false;
 	}
 	// lw
 	else if(opField == "100011"){
@@ -46,6 +48,7 @@ void Control::setValues(string opCode)
 		memWrite = false;
 		jump = false;
 		ALUop = "00";
+		branch = false;
 	}
 	// sw
 	else if(opField == "101011"){
@@ -55,15 +58,38 @@ void Control::setValues(string opCode)
 		memWrite = true;
 		jump = false;
 		ALUop = "00";
+		branch = false;
 	}
-	// beq
-	else if(opField == "000100"){
+	// jump
+	else if(opField == "000010"){
 		aluSrc = false;
 		RegWrite = false;
 		memRead = false;
 		memWrite = false;
 		jump = true;
+		ALUop = "00";
+		branch = false;
+	}
+	//beq
+	else if(opField == "000100"){
+		aluSrc = false;
+		RegWrite = false;
+		memRead = false;
+		memWrite = false;
+		jump = false;
 		ALUop = "01";
+		branch = true;
+	}
+	else if(opField == "001000"){
+		regDst = true;
+		aluSrc = true;
+		memtoReg = false;
+		RegWrite = true;
+		memRead = false;
+		memWrite = false;
+		jump = false;
+		ALUop = "10";
+		branch = false;
 	}
 
 }
