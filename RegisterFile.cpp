@@ -64,7 +64,7 @@ Write to the write register with data
 void RegisterFile::write()
 {
   if(regWrite){
-    Registers[stoi(writeRegister, 0, 16)] = writeValue;
+    Registers[stoi(writeRegister, 0, 2)] = writeValue;
   }
 }
 
