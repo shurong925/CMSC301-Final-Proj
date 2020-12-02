@@ -88,10 +88,12 @@ string RegisterFile::getValue(string index)
   return "";
 }
 
-void RegisterFile::setWriteValue(string data){
+void RegisterFile::setWriteValue(string data)
+{
   writeValue = data;
 }
 
-unordered_map<int, string> RegisterFile::getRegisters(){
+unordered_map<int, string> RegisterFile::getRegisters()
+{
   return Registers;
 }

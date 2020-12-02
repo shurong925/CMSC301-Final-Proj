@@ -6,7 +6,9 @@
 
 using namespace std;
 
-
+/*
+This class shifts left 2 bits of a binary substring
+*/
 class ShiftLeft
 {
  private:
@@ -21,4 +23,3 @@ class ShiftLeft
 };
 
 #endif
-

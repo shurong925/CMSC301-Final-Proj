@@ -1,6 +1,6 @@
 OBJS = Processor.o ASMParser.o Instruction.o Opcode.o RegisterTable.o ALU.o ALUControl.o Control.o DataMemory.o InstructionMemory.o Multiplexor.o ProgramCounter.o RegisterFile.o ShiftLeft.o SignExtend.o
 CC = g++ 
-CCFLAGS = -std=c++11 -Wall -Wno-deprecated -Werror=return-type -g
+CCFLAGS = -std=c++17 -Wall -Wno-deprecated -Werror=return-type -g
 
 all:Processor
 

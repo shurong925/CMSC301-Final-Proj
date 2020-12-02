@@ -2,14 +2,13 @@
 using namespace std;
 
 //constructor
-ALUControl::ALUControl(){
-
-
+ALUControl::ALUControl()
+{
 }
 
 //deconstructor
 ALUControl::~ALUControl()
-{	
+{
 }
 
 string ALUControl::getOp(){
@@ -44,12 +43,10 @@ void ALUControl::setOp(){
 
 void ALUControl::setALUOp(string aop){
 	aluOp = aop;
-	setOp(); //aluop should be gotten after the funct, so at this point we 
+	setOp(); //aluop should be gotten after the funct, so at this point we
 			 //can automatically invoke setop to determine the operation
 }
 
 void ALUControl::setFunct(string funct){
 	functField = funct;
 }
-
-

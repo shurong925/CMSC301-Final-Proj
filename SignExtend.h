@@ -6,6 +6,9 @@
 
 using namespace std;
 
+/*
+This class extends the binary string to 32bits
+*/
 
 class SignExtend
 {

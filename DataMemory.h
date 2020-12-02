@@ -5,6 +5,11 @@
 #include <unordered_map>
 
 using namespace std;
+/*
+  This class contains the collection of addresss and the data stored in that address.
+  It also contains boolean variables indicating whether the associated instruction is read or write.
+
+*/
 class DataMemory
 {
  private:
@@ -13,7 +18,6 @@ class DataMemory
    string writeData; //The data to be written to memory, from register file
    bool memWrite;
    bool memRead;
-
 
  public:
     DataMemory(unordered_map<string, string> Memory);

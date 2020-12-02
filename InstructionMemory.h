@@ -5,6 +5,10 @@
 
 using namespace std;
 
+/*
+This class contains a collection of all instructions and has two indicators of what the current instruction is
+and its address. Also, it could split an instruction into several peices for input for other objects to use.
+*/
 class InstructionMemory
 {
 	private:

@@ -1,13 +1,15 @@
 #include "DataMemory.h"
 using namespace std;
 
+//constructor
 DataMemory::DataMemory(unordered_map<string, string> Mem)
 {
   Memory = Mem;
 }
-
+//destructor
 DataMemory::~DataMemory(){}
 
+//return the data at the address
 string DataMemory::read()
 {
 	if(memRead){
@@ -15,7 +17,7 @@ string DataMemory::read()
 	}
 	else{
 		return "";
-	} 
+	}
 }
 
 
@@ -43,4 +45,3 @@ void DataMemory::writeTheData(){
 unordered_map<string, string> DataMemory::getMemory(){
 	return Memory;
 }
-

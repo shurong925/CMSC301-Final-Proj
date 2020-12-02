@@ -3,7 +3,11 @@
 #include <string>
 using namespace std;
 
-class Multiplexor{
+/*
+	This class has a varible of boolean indicator outputted from Control and two data that 
+*/
+class Multiplexor
+{
 	private:
 		bool controlInput;
 		string dataOne;

@@ -3,7 +3,11 @@
 #include <string>
 using namespace std;
 
-class ALUControl{
+/*
+	This class contains three strings fields of opcode, functField, and the oprand
+*/
+class ALUControl
+{
 	private:
 		string aluOp;
 		string functField;
