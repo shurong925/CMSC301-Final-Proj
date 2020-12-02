@@ -16,6 +16,119 @@
 
 
 using namespace std;
+string hextoBin(string hexa){
+   long int i = 0;
+   string output = "";
+   while (hexa[i]){
+      switch (hexa[i]){
+      case '0':
+         output.append("0000");
+         break;
+      case '1':
+         output.append("0001");
+         break;
+      case '2':
+         output.append("0010");
+         break;
+      case '3':
+         output.append("0011");
+         break;
+      case '4':
+         output.append("0100");
+         break;
+      case '5':
+         output.append("0101");
+         break;
+      case '6':
+         output.append("0110");
+         break;
+      case '7':
+         output.append("0111");
+         break;
+      case '8':
+         output.append("1000");
+         break;
+      case '9':
+         output.append("1001");
+         break;
+      case 'A':
+      case 'a':
+         output.append("1010");
+         break;
+      case 'B':
+      case 'b':
+         output.append("1011");
+         break;
+      case 'C':
+      case 'c':
+         output.append("1100");
+         break;
+      case 'D':
+      case 'd':
+         output.append("1101");
+         break;
+      case 'E':
+      case 'e':
+         output.append("1110");
+         break;
+      case 'F':
+      case 'f':
+         output.append("1111");
+         break;
+      default:
+         cout << "please enter valid hexadecimal digit "<< hexa[i];
+      }
+   i++;
+   }
+   return output;
+}
+
+string bintoHex(string bin){
+  unordered_map<string, char> um;
+    um["0000"] = '0';
+    um["0001"] = '1';
+    um["0010"] = '2';
+    um["0011"] = '3';
+    um["0100"] = '4';
+    um["0101"] = '5';
+    um["0110"] = '6';
+    um["0111"] = '7';
+    um["1000"] = '8';
+    um["1001"] = '9';
+    um["1010"] = 'A';
+    um["1011"] = 'B';
+    um["1100"] = 'C';
+    um["1101"] = 'D';
+    um["1110"] = 'E';
+    um["1111"] = 'F';
+    int l = bin.size();
+    if(bin == ""){
+      return "";
+    }
+     
+    // add min 0's in the beginning to make
+    // left substring length divisible by 4 
+    for (int i = 1; i <= (4 - l % 4) % 4; i++)
+        bin = '0' + bin;
+     
+    int i = 0;
+    string hex = "";
+     
+    while (1)
+    {
+        // one by one extract from left, substring
+        // of size 4 and add its hex code
+        hex += um[bin.substr(i, 4)];
+        i += 4;
+        if (i == bin.size())
+            break;
+             
+    }
+     
+    // required hexadecimal number
+    return hex;    
+
+}
 
 void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFile RF, Control Control, bool w, string of, unordered_map<int, string> machineInstructions, bool print_memory_contents, string output_mode)
 {
@@ -72,8 +185,9 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     RF.writeInstructionOrNot(Control.getRegWrite());
     RF.setWriteRegister(MUXOneData);
 
-    string ReadDataOne = RF.getFirstRegister();
-    string ReadDataTwo = RF.getSecRegister();
+    string ReadDataOne = hextoBin(RF.getFirstRegister());
+    string ReadDataTwo = hextoBin(RF.getSecRegister());
+
 
     MUXTwo.setData(Extended, ReadDataTwo);
     MUXTwo.setInput(Control.getaluSrc());
@@ -86,14 +200,14 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
     ALUOne.setOperation(Operation);
     ALUOne.setReadDataOne(ReadDataOne);
-    ALUOne.setReadDataTwo(MUXTwoData, !Control.getaluSrc());
+    ALUOne.setReadDataTwo(MUXTwoData);
     string ALUOneResult = ALUOne.getResult();
 
 
     DM.setMemWrite(Control.getmemWrite());
     DM.setMemRead(Control.getmemRead());
-    DM.setAddress(ALUOneResult);
-    DM.setWriteData(ReadDataTwo);
+    DM.setAddress(bintoHex(ALUOneResult));
+    DM.setWriteData(bintoHex(ReadDataTwo));
 
     string DMOutput = DM.read();
     DM.writeTheData();
@@ -101,7 +215,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     MUXThree.setInput(Control.getMemToReg());
     string MUXThreeData = MUXThree.getData();
 
-    RF.setWriteValue(MUXThreeData);
+    RF.setWriteValue(bintoHex(MUXThreeData));
     RF.write();
 
     SLTwo.shiftLeftTwo(Extended);
@@ -131,6 +245,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
     if(w){
         MyFile << setbase(16);
         MyFile << "The Current Instruction: " << CurrentInstruction << "\n";
+        MyFile << "The machine encoded instruction: " << IM.getMap()[CurrentAddress] << endl;
         MyFile << "Output of Program Counter: 0x" <<  CurrentAddress << "\n";
 
         
@@ -204,10 +319,9 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
         MyFile << "\n" << "\n";
 
         //print output of register file
-        
         MyFile << "Output of Register file: " << "\n";
-        MyFile << "Read Data One: 0x" << ReadDataOne << "\n";
-        MyFile << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        MyFile << "Read Data One: 0x" << stoll(ReadDataOne, 0, 2) << "\n";
+        //MyFile << "Read Data Two: 0x" << stoll(ReadDataTwo, 0, 2) << "\n";
         MyFile << "\n" << "\n";
 
 
@@ -215,17 +329,18 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
         //print input to to multiplexor two (in between registers and alu)
         
         MyFile << "The input to multiplexor two: " << "\n";
-        MyFile << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        MyFile << "Read Data Two: 0x" << stoll(ReadDataTwo, 0, 2) << "\n";
+        MyFile << "Sign Extended value: 0x" << stoi(Extended, 0, 2) << "\n";
         MyFile << "The ALU Src: 0x" << Control.getaluSrc() << "\n";
         //print output of multiplexor two
         MyFile << "Output of Multiplexor two: " << "\n";
-        MyFile << "Value to be used in ALU: 0x" << MUXTwoData << "\n";
+        MyFile << "Value to be used in ALU: 0x" << stoll(MUXTwoData, 0, 2) << "\n";
         MyFile << "\n" << "\n";
 
         //print input to ALU control
         MyFile << "Input to ALU control: " << "\n";
         MyFile << "ALU Op value from control: 0x" << Control.getALUOp() << "\n";
-        MyFile << "Funct field from Instruction memory: 0x" << CurrentFunct << "\n";
+        MyFile << "Funct field from Instruction memory: 0x" << stoi(CurrentFunct, 0, 2) << "\n";
         
         //print output of ALU control
         MyFile << "Output of ALU control: " << "\n";
@@ -235,20 +350,20 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
         //print input to ALU one
         MyFile << "Input to ALU One: " << "\n";
-        MyFile << "Read data one: 0x" << ReadDataOne << "\n";
-        MyFile << "Output of multiplexor two: 0x" << MUXTwoData << "\n";
+        MyFile << "Read data one: 0x" << stoll(ReadDataOne, 0, 2) << "\n";
+        MyFile << "Output of multiplexor two: 0x" << stoll(MUXTwoData, 0,2) << "\n";
         MyFile << "Operation from ALU control: 0x" << stoi(Operation, 0, 2) << "\n";
         
         //print output of ALU one
         MyFile << "Output of ALUOne: " << "\n";
-        MyFile << "ALU One Result: 0x" << ALUOneResult << "\n";
+        MyFile << "ALU One Result: 0x" << stoll(ALUOneResult, 0, 2) << "\n";
         MyFile << "\n" << "\n";
 
 
         //print input to data memory
         MyFile << "Input to data memory: " << "\n";
-        MyFile << "ALU Result: 0x" << ALUOneResult << "\n";
-        MyFile << "Write Data: 0x" << ReadDataTwo << "\n";
+        MyFile << "ALU Result: 0x" << stoll(ALUOneResult, 0, 2) << "\n";
+        MyFile << "Write Data: 0x" << stoll(ReadDataTwo, 0, 2) << "\n";
         MyFile << "Value of MemWrite: 0x" << Control.getmemWrite() << "\n";
         MyFile << "Value of MemRead: 0x"  << Control.getmemRead() << "\n";
         
@@ -262,7 +377,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
         //print input to multiplexor three (after data memory on far righ of diagram)
         MyFile << "Input to multiplexor three: " << "\n";
-        MyFile << "Output of ALU one: 0x" << ALUOneResult << "\n";
+        MyFile << "Output of ALU one: 0x" << stoll(ALUOneResult, 0, 2) << "\n";
         MyFile << "Read data from data memory: 0x" << DMOutput << "\n";
         MyFile << "Value of MemToReg: 0x" << Control.getMemToReg() << "\n";
         
@@ -341,11 +456,13 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
         MyFile << "Input to PC: " << "\n";
         MyFile << "Output of multiplexor 5: 0x" << stoi(MUXFiveData,0,2) << "\n";
       
+      
       }
       //print to command line
       else{
         cout << setbase(16);
         cout << "The Current Instruction: " << CurrentInstruction << "\n";
+        cout << "The machine encoded instruction: " << IM.getMap()[CurrentAddress] << endl;
         cout << "Output of Program Counter: 0x" <<  CurrentAddress << "\n";
 
         
@@ -419,10 +536,9 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
         cout << "\n" << "\n";
 
         //print output of register file
-        
         cout << "Output of Register file: " << "\n";
-        cout << "Read Data One: 0x" << ReadDataOne << "\n";
-        cout << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        cout << "Read Data One: 0x" << stoll(ReadDataOne, 0, 2) << "\n";
+        //cout << "Read Data Two: 0x" << stoll(ReadDataTwo, 0, 2) << "\n";
         cout << "\n" << "\n";
 
 
@@ -430,17 +546,18 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
         //print input to to multiplexor two (in between registers and alu)
         
         cout << "The input to multiplexor two: " << "\n";
-        cout << "Read Data Two: 0x" << ReadDataTwo << "\n";
+        cout << "Read Data Two: 0x" << stoll(ReadDataTwo, 0, 2) << "\n";
+        cout << "Sign Extended value: 0x" << stoi(Extended, 0, 2) << "\n";
         cout << "The ALU Src: 0x" << Control.getaluSrc() << "\n";
         //print output of multiplexor two
         cout << "Output of Multiplexor two: " << "\n";
-        cout << "Value to be used in ALU: 0x" << MUXTwoData << "\n";
+        cout << "Value to be used in ALU: 0x" << stoll(MUXTwoData, 0, 2) << "\n";
         cout << "\n" << "\n";
 
         //print input to ALU control
         cout << "Input to ALU control: " << "\n";
         cout << "ALU Op value from control: 0x" << Control.getALUOp() << "\n";
-        cout << "Funct field from Instruction memory: 0x" << CurrentFunct << "\n";
+        cout << "Funct field from Instruction memory: 0x" << stoi(CurrentFunct, 0, 2) << "\n";
         
         //print output of ALU control
         cout << "Output of ALU control: " << "\n";
@@ -450,20 +567,20 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
         //print input to ALU one
         cout << "Input to ALU One: " << "\n";
-        cout << "Read data one: 0x" << ReadDataOne << "\n";
-        cout << "Output of multiplexor two: 0x" << MUXTwoData << "\n";
+        cout << "Read data one: 0x" << stoll(ReadDataOne, 0, 2) << "\n";
+        cout << "Output of multiplexor two: 0x" << stoll(MUXTwoData, 0,2) << "\n";
         cout << "Operation from ALU control: 0x" << stoi(Operation, 0, 2) << "\n";
         
         //print output of ALU one
         cout << "Output of ALUOne: " << "\n";
-        cout << "ALU One Result: 0x" << ALUOneResult << "\n";
+        cout << "ALU One Result: 0x" << stoll(ALUOneResult, 0, 2) << "\n";
         cout << "\n" << "\n";
 
 
         //print input to data memory
         cout << "Input to data memory: " << "\n";
-        cout << "ALU Result: 0x" << ALUOneResult << "\n";
-        cout << "Write Data: 0x" << ReadDataTwo << "\n";
+        cout << "ALU Result: 0x" << stoll(ALUOneResult, 0, 2) << "\n";
+        cout << "Write Data: 0x" << stoll(ReadDataTwo, 0, 2) << "\n";
         cout << "Value of MemWrite: 0x" << Control.getmemWrite() << "\n";
         cout << "Value of MemRead: 0x"  << Control.getmemRead() << "\n";
         
@@ -477,7 +594,7 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
         //print input to multiplexor three (after data memory on far righ of diagram)
         cout << "Input to multiplexor three: " << "\n";
-        cout << "Output of ALU one: 0x" << ALUOneResult << "\n";
+        cout << "Output of ALU one: 0x" << stoll(ALUOneResult, 0, 2) << "\n";
         cout << "Read data from data memory: 0x" << DMOutput << "\n";
         cout << "Value of MemToReg: 0x" << Control.getMemToReg() << "\n";
         
@@ -563,6 +680,14 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
 
   }
   if(print_memory_contents){
+    if(w){
+      MyFile << "\n" << "\n";
+      MyFile << "Registers:" << "\n";
+    }
+    else{
+      cout << endl;
+      cout << "Registers:" << endl;
+    }
     for(const auto & [key, value] : RF.getRegisters()){
       if(w){
         MyFile << setbase(10);
@@ -572,6 +697,14 @@ void process(DataMemory DM, InstructionMemory IM, ProgramCounter PC, RegisterFil
         cout << setbase(10);
         cout << key << ":" << value << "\n";
       }
+    }
+    if(w){
+      MyFile << "\n" << "\n";
+      MyFile << "Data Memory:" << "\n";
+    }
+    else{
+      cout << endl;
+      cout << "Data Memory:" << endl;
     }
     for(const auto & [key, value] : DM.getMemory()){
       if(w){
