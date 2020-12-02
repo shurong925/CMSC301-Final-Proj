@@ -726,6 +726,10 @@ int main(int argc, char *argv[])
   unordered_map<string, string> config;
   while(getline(confg,s))
   {
+     int pound = s.find("#");
+     if(pound >= 0){
+        continue;
+     }
 
     int equals = s.find("=");
     if(equals > 0){
@@ -781,6 +785,11 @@ int main(int argc, char *argv[])
   unordered_map<string, string> dataMemory;
   while(getline(Data,s1))
   {
+     int pound = s.find("#");
+     if(pound >= 0){
+        continue;
+     }
+     
     int equals = s1.find(":");
     if(equals > 0)
     {
@@ -806,6 +815,11 @@ int main(int argc, char *argv[])
   unordered_map<int, string> registerMemory;
   while(getline(Register,s2))
   {
+     int pound = s.find("#");
+     if(pound >= 0){
+        continue;
+     }
+     
     int equals = s2.find(":");
     if(equals > 0)
     {
