@@ -20,7 +20,7 @@ class ALU
    string op; //The operation indicated by ALU Control
    string result; //The result after performing functions
    string readDataOne; //The value of first register to read
-   int readDataTwo; //The value of second register to read
+   string readDataTwo; //The value of second register to read
    string writeRegister; //The number of the register to be written to
    string writeValue; //The value to write to the write register
 
@@ -31,7 +31,7 @@ class ALU
    void setWriteRegister(string write); //Set the number of register to be written to
    void setOperation(string operation); //Set the function to be performed based on ALU control
    void setReadDataOne(string One); //Set the number of first register to read
-   void setReadDataTwo(string Two, bool hex); //Set the number of second register to read
+   void setReadDataTwo(string Two); //Set the number of second register to read
 
    string getWriteRegister(); //Get the number of register to be written to
    string getOperation(); //Get the operation from ALU Control
